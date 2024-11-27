@@ -41,9 +41,9 @@ class AdjList{
 };
 
 class Graph{
-    AdjList *list;
-    int vertices;
     public:
+        AdjList *list;
+        int vertices;
         Graph(int num){
             vertices = num;
             list = new AdjList[num];
@@ -152,6 +152,44 @@ class priorityQueue{
 };
 
 //================================================================================================
+
+void Dijkstra(Graph &g, char start, char end){
+    int startVertex = vertexHash(start);
+    int endVertex = vertexHash(end);
+    float *distance = new float[g.vertices];
+    bool *visited = new bool[g.vertices];
+    char *path = new char[g.vertices];
+    for(int i = 0; i < g.vertices; i++){
+        distance[i] = 999999;
+        visited[i] = false;
+        path[i] = ' ';
+    }
+    distance[startVertex] = 0;
+    for(int i = 0; i < g.vertices; i++){
+        int minVertex = -1;
+        for(int j = 0; j < g.vertices; j++){
+            if(!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex])){
+                minVertex = j;
+            }
+        }
+        visited[minVertex] = true;
+        for(Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next){
+            if(distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)]){
+                distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
+                path[vertexHash(temp->vertex)] = minVertex + 'A';
+            }
+        }
+    }
+    cout << "Shortest Path from " << start << " to " << end << " is: ";
+    cout << end;
+    char temp = path[endVertex];
+    while(temp != ' '){
+        cout << " <- " << temp;
+        temp = path[vertexHash(temp)];
+    }
+    cout << endl;
+    cout << "Total Distance: " << distance[endVertex] << endl;
+}
 
 
 #endif
