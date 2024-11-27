@@ -63,7 +63,29 @@ int main(){
         g.print();
     }
     else if(ch == '2'){
-        
+        char choice;
+        cout << "1) Find shortest path between two intersections?\n";
+        cout << "2) Find shortest path for a vehicle?\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        if(choice == '1'){
+            char start, end;
+            cout << "Enter start intersection: ";
+            cin >> start;
+            cout << "Enter end intersection: ";
+            cin >> end;
+            Dijkstra(g, start, end);
+        }
+        else if(choice == '2'){
+            // After storing vehicles implement this
+
+
+            
+        }
+        else{
+            cout << "Invalid choice" << endl;
+        }
+
     }
     else if(ch == '3'){
         cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
