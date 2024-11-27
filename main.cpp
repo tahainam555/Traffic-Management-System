@@ -48,12 +48,44 @@ int main(){
         }
         i++;
     }
-    
+    file2.close();
+
+    file.open("data/vehicles.csv");
+    num=0;
+    while(getline(file, str)){
+        num++;
+    }
+    cout << num << endl;
+    file.close();
+    Vehicles *v = new Vehicles[num];
+    file2.open("data/vehicles.csv");
+    i=0;
+    string id = "";
+    char start = ' ';
+    char end = ' ';
+    while(getline(file2, str)){
+        if(i>0){
+            id = "";
+            start = ' ';
+            end = ' ';
+            for(int j=0; j<str.length(); j++){
+                if(str[j] == ','){
+                    start = str[j+1];
+                    end = str[j+3];
+                    break;
+                }
+                id += str[j];
+            }
+        }
+        i++;
+        cout << id << " " << start << " " << end << endl;
+        v[i-1].setVehicles(id, start, end);
+    }
     
     char ch;
     cout << "=============WELCOME TO THE ROAD NETWORK=============" << endl;
     cout << "1: DISPLAY CITY ROAD NETWORK" << endl;
-    cout << "2: FIND SHORTEST PATH" << endl;
+    cout << "2: SIMULATE TRAFFIC" << endl;
     cout << "3: TRAFFIC SIGNAL STATUS" << endl;
     cout << "====================================================" << endl;
     cout << "Enter your choice: ";
@@ -63,29 +95,8 @@ int main(){
         g.print();
     }
     else if(ch == '2'){
-        char choice;
-        cout << "1) Find shortest path between two intersections?\n";
-        cout << "2) Find shortest path for a vehicle?\n";
-        cout << "Enter your choice: ";
-        cin >> choice;
-        if(choice == '1'){
-            char start, end;
-            cout << "Enter start intersection: ";
-            cin >> start;
-            cout << "Enter end intersection: ";
-            cin >> end;
-            Dijkstra(g, start, end);
-        }
-        else if(choice == '2'){
-            // After storing vehicles implement this
-
-
-            
-        }
-        else{
-            cout << "Invalid choice" << endl;
-        }
-
+        cout << "=================TRAFFIC SIMULATION==================" << endl;
+        simulateTraffic(g, v, num);
     }
     else if(ch == '3'){
         cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
