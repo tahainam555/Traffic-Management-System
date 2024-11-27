@@ -3,6 +3,7 @@
 
 #include<iostream>
 #include<string>
+#include<windows.h>
 using namespace std;
 
 //================================================================================================
@@ -54,6 +55,64 @@ class Graph{
             list[i].insert(ch2, weight);
             list[j].insert(ch, weight);
         }
+
+        void updateEdge(char ch, char ch2, float weight){
+            int i = vertexHash(ch);
+            Node *temp = list[i].head;
+            while(temp != NULL){
+                if(temp->vertex == ch2){
+                    temp->weight = weight;
+                    break;
+                }
+                temp = temp->next;
+            }
+            int j = vertexHash(ch2);
+            temp = list[j].head;
+            while(temp != NULL){
+                if(temp->vertex == ch){
+                    temp->weight = weight;
+                    break;
+                }
+                temp = temp->next;
+            }
+        }
+
+        void deleteEdge(char ch, char ch2){
+            int i = vertexHash(ch);
+            Node *temp = list[i].head;
+            Node *prev = NULL;
+            while(temp != NULL){
+                if(temp->vertex == ch2){
+                    if(prev == NULL){
+                        list[i].head = temp->next;
+                    }
+                    else{
+                        prev->next = temp->next;
+                    }
+                    delete temp;
+                    break;
+                }
+                prev = temp;
+                temp = temp->next;
+            }
+            int j = vertexHash(ch2);
+            temp = list[j].head;
+            prev = NULL;
+            while(temp != NULL){
+                if(temp->vertex == ch){
+                    if(prev == NULL){
+                        list[j].head = temp->next;
+                    }
+                    else{
+                        prev->next = temp->next;
+                    }
+                    delete temp;
+                    break;
+                }
+                prev = temp;
+                temp = temp->next;
+            }
+        }
         void print(){
             for(int i = 0; i < vertices; i++){
                 char ch = i + 'A';
@@ -65,6 +124,80 @@ class Graph{
             }
         }
 };
+
+//================================================================================================
+
+struct Vehicles{
+    string id;
+    char start;
+    char end;
+    char current;
+
+    Vehicles(){
+        id = "";
+        start = ' ';
+        end = ' ';
+        current = ' ';
+    }
+
+    void setVehicles(string id, char start, char end){
+        this->id = id;
+        this->start = start;
+        this->end = end;
+        this->current = start;
+    }
+};
+
+
+void Dijkstra(Graph &g, char start, char end){
+    int startVertex = vertexHash(start);
+    int endVertex = vertexHash(end);
+    float *distance = new float[g.vertices];
+    bool *visited = new bool[g.vertices];
+    char *path = new char[g.vertices];
+    for(int i = 0; i < g.vertices; i++){
+        distance[i] = 999999;
+        visited[i] = false;
+        path[i] = ' ';
+    }
+    distance[startVertex] = 0;
+    for(int i = 0; i < g.vertices; i++){
+        int minVertex = -1;
+        for(int j = 0; j < g.vertices; j++){
+            if(!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex])){
+                minVertex = j;
+            }
+        }
+        visited[minVertex] = true;
+        for(Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next){
+            if(distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)]){
+                distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
+                path[vertexHash(temp->vertex)] = minVertex + 'A';
+            }
+        }
+    }
+    cout << "Shortest Path from " << start << " to " << end << " is: ";
+    cout << end;
+    char temp = path[endVertex];
+    while(temp != ' '){
+        cout << " <- " << temp;
+        temp = path[vertexHash(temp)];
+    }
+    cout << endl;
+    cout << "Total Distance: " << distance[endVertex] << endl;
+}
+void moveVehicle(Graph &g, Vehicles &v){
+    Dijkstra(g, v.current, v.end);
+    v.current = v.end;
+    cout << "Vehicle " << v.id << " has reached " << v.current << endl;
+}
+
+void simulateTraffic(Graph &g, Vehicles *v, int num){
+    for(int i = 0; i < num; i++){
+        moveVehicle(g, v[i]);
+        Sleep(2);
+    }
+}
 
 //================================================================================================
 
@@ -150,46 +283,4 @@ class priorityQueue{
             }
         }
 };
-
-//================================================================================================
-
-void Dijkstra(Graph &g, char start, char end){
-    int startVertex = vertexHash(start);
-    int endVertex = vertexHash(end);
-    float *distance = new float[g.vertices];
-    bool *visited = new bool[g.vertices];
-    char *path = new char[g.vertices];
-    for(int i = 0; i < g.vertices; i++){
-        distance[i] = 999999;
-        visited[i] = false;
-        path[i] = ' ';
-    }
-    distance[startVertex] = 0;
-    for(int i = 0; i < g.vertices; i++){
-        int minVertex = -1;
-        for(int j = 0; j < g.vertices; j++){
-            if(!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex])){
-                minVertex = j;
-            }
-        }
-        visited[minVertex] = true;
-        for(Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next){
-            if(distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)]){
-                distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
-                path[vertexHash(temp->vertex)] = minVertex + 'A';
-            }
-        }
-    }
-    cout << "Shortest Path from " << start << " to " << end << " is: ";
-    cout << end;
-    char temp = path[endVertex];
-    while(temp != ' '){
-        cout << " <- " << temp;
-        temp = path[vertexHash(temp)];
-    }
-    cout << endl;
-    cout << "Total Distance: " << distance[endVertex] << endl;
-}
-
-
 #endif
