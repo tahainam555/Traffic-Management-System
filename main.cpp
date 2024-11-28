@@ -78,7 +78,7 @@ int main(){
             }
         }
         i++;
-        cout << id << " " << start << " " << end << endl;
+//        cout << id << " " << start << " " << end << endl;
         v[i-1].setVehicles(id, start, end);
     }
     
