@@ -2,7 +2,7 @@
 #define HAMDA_H
 
 struct QueueNode{
-
+// cout<<"hello";
 };
 
 class PriorityQueue{
