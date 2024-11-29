@@ -2,6 +2,8 @@
 #include<string>
 #include<fstream>
 #include "taha.h"
+#include "minahil.h"
+#include "hamda.h"
 using namespace std;
 
 int main(){
