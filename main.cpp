@@ -81,7 +81,6 @@ int main(){
 //        cout << id << " " << start << " " << end << endl;
         v[i-1].setVehicles(id, start, end);
     }
-    file2.close();
     
     char ch;
     cout << "=============WELCOME TO THE ROAD NETWORK=============" << endl;
@@ -101,7 +100,7 @@ int main(){
     }
     else if(ch == '3'){
         cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
-        pq.displayQueue();
+        pq.print();
     }
     else{
         cout << "Invalid choice" << endl;
