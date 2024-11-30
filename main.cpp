@@ -2,9 +2,7 @@
 #include<string>
 #include<fstream>
 #include "taha.h"
-#include "minahil"
-#include "hamda.h"
-
+#include "minahil.h"
 using namespace std;
 
 
