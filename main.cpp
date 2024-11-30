@@ -2,8 +2,9 @@
 #include<string>
 #include<fstream>
 #include "taha.h"
-#include "minahil.h"
+#include "minahil"
 #include "hamda.h"
+
 using namespace std;
 
 
@@ -90,6 +91,7 @@ int main(){
     cout << "1: DISPLAY CITY ROAD NETWORK" << endl;
     cout << "2: SIMULATE TRAFFIC" << endl;
     cout << "3: TRAFFIC SIGNAL STATUS" << endl;
+    cout << "5: HANDLE EMERGENCY VEHICLE ROUTING" << endl;
     cout << "====================================================" << endl;
     cout << "Enter your choice: ";
     cin >> ch;
@@ -103,7 +105,18 @@ int main(){
     }
     else if(ch == '3'){
         cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
-        pq.print();
+        // pq.print();
+    }
+    else if (ch == '5') {
+        cout<<"=================EMERGENCY ROUTE==================" << endl;
+        char start, end;
+        cout<<"Enter start intersection: ";
+        cin>>start;
+        cout<<"Enter end intersection: ";
+        cin>>end; 
+
+        emergencyRouting E1(&g, num);
+        E1.ASearch(start, end); 
     }
     else{
         cout << "Invalid choice" << endl;
