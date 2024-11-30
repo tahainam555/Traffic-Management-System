@@ -100,7 +100,7 @@ int main(){
     }
     else if(ch == '3'){
         cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
-        pq.print();
+        //pq.print();
     }
     else{
         cout << "Invalid choice" << endl;
