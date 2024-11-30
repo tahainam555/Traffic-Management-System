@@ -404,8 +404,8 @@ void moveVehicle2(Graph &g, Vehicles &v, TrafficSignal *signals) {
     v.current = s.getTop();
     cout << "Vehicle " << v.id << " is moving from " << s.getTop() << " to " << v.end << endl;
     s.pop();
-    moveVehicle2(g, v, signals);
     cout << "Vehicle " << v.id << " has reached " << v.current << endl;
+    moveVehicle2(g, v, signals);
 }
 
 void simulateTraffic2(Graph &g, Vehicles *v, int num, TrafficSignal *signals) {
