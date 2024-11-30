@@ -21,9 +21,11 @@ struct Node{
 class AdjList{
     public:
         Node* head;
+        
         AdjList(){
             head = NULL;
         }
+
         void insert(char vertex, float weight){
             Node *newNode = new Node;
             newNode->vertex = vertex;
@@ -31,6 +33,7 @@ class AdjList{
             newNode->next = head;
             head = newNode;
         }
+
         void print(){
             Node *temp = head;
             while(temp != NULL){
@@ -39,16 +42,20 @@ class AdjList{
             }
             cout << endl;
         }
+
 };
 
 class Graph{
     public:
+
         AdjList *list;
         int vertices;
+
         Graph(int num){
             vertices = num;
             list = new AdjList[num];
         }
+
         void addEdge(char ch, char ch2, float weight){
             int i = vertexHash(ch);
             int j = vertexHash(ch2);
