@@ -210,8 +210,8 @@ class emergencyRouting
             }
 
             printPath(start, end);
-        }
 
+        }
 
         void printPath(char start, char end) 
         {
