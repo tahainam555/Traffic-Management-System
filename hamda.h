@@ -53,12 +53,16 @@ public:
     List *table;
     int size;
     int *count;
+    Vehicles *vehicle;
+    Graph g;
 
-    HashTable(int n = 353)
+    HashTable(Graph gg, int n = 353, Vehicles *v = NULL)
     {
         table = new List[n];
         size = n;
         count = new int[n];
+        vehicle = v;
+        g = gg;
         for (int i = 0; i < n; i++)
         {
             count[i] = 0;
@@ -130,6 +134,29 @@ public:
                 continue;
             }
             cout << str[0] << " to " << str[1] << count[i] << endl;
+        }
+    }
+
+    void storeData()
+    {
+        for (int i = 0; i < 31; i++)
+        {
+            char a = vehicle[i].start;
+            char b = vehicle[i].end;
+            my_stack ss;
+            ss = Dijkstra(g, a, b);
+            char start = '';
+            char end = '';
+            start = ss.getTop();
+            end = ss.getTop();
+            ss.pop();
+            while (!ss.isEmpty())
+            {
+                start = end;
+                end = ss.getTop();
+                ss.pop();
+                insert(start,end,vehicle[i].id);
+            }
         }
     }
 };
