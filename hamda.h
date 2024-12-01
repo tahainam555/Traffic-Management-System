@@ -1,14 +1,14 @@
 #ifndef HAMDA_H
 #define HAMDA_H
+#include "taha.h"
+#include "minahil.h"
 
-struct QueueNode{
-// cout<<"hello";
+class HashTable {
+    public:
 
-};
+        HashTable(){}
+        
 
-class PriorityQueue{
-
-};
-
+};    
 
 #endif // HAMDA_H
