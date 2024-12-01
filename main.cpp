@@ -103,7 +103,7 @@ int main(){
     }
     else if(ch == '3'){
         cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
-        // pq.print();
+         pq.displayQueue();
     }
     else if (ch == '5') {
         cout<<"=================EMERGENCY ROUTE==================" << endl;
