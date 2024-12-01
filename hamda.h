@@ -54,15 +54,15 @@ public:
     int size;
     int *count;
     Vehicles *vehicle;
-    Graph g;
+    // Graph g;
 
-    HashTable(Graph gg, int n = 353, Vehicles *v = NULL)
+    HashTable(int n = 353)
     {
         table = new List[n];
         size = n;
         count = new int[n];
-        vehicle = v;
-        g = gg;
+        // vehicle = v;
+        // g = gg;
         for (int i = 0; i < n; i++)
         {
             count[i] = 0;
@@ -137,7 +137,7 @@ public:
         }
     }
 
-    void storeData()
+    void storeData(Graph g , Vehicles* vehicle)
     {
         for (int i = 0; i < 31; i++)
         {
@@ -145,8 +145,8 @@ public:
             char b = vehicle[i].end;
             my_stack ss;
             ss = Dijkstra(g, a, b);
-            char start = '';
-            char end = '';
+            char start = '\0';
+            char end = '\0';
             start = ss.getTop();
             end = ss.getTop();
             ss.pop();
@@ -155,11 +155,11 @@ public:
                 start = end;
                 end = ss.getTop();
                 ss.pop();
-                insert(start,end,vehicle[i].id);
+                insert(start, end, vehicle[i].id);
             }
         }
     }
 };
 
 #endif
-//okayy end
+// okayy end
