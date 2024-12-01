@@ -2,24 +2,24 @@
 #define _HAMDA_H
 #include "taha.h"
 
-struct Node
+struct LinkedListNode
 {
-    Node *next;
+    LinkedListNode *next;
     string vehicle;
 
-    Node(string v = "", Node *nxt = NULL)
+    LinkedListNode(string v = "", LinkedListNode *nxt = NULL)
     {
         vehicle = v;
         next = nxt;
     }
 };
 
-class List
+class LinkedList
 {
 public:
-    Node *head;
+    LinkedListNode *head;
 
-    void append(Node *add)
+    void append(LinkedListNode *add)
     {
         if (head == NULL)
         {
@@ -27,7 +27,7 @@ public:
             return;
         }
 
-        Node *temp = head;
+        LinkedListNode *temp = head;
         while (temp->next != NULL)
         {
             temp = temp->next;
@@ -37,7 +37,7 @@ public:
 
     void display()
     {
-        Node *temp = head;
+        LinkedListNode *temp = head;
         while (temp != NULL)
         {
             cout << temp->vehicle << " ";
@@ -50,7 +50,7 @@ public:
 class HashTable
 {
 public:
-    List *table;
+    LinkedList *table;
     int size;
     int *count;
     Vehicles *vehicle;
@@ -58,7 +58,7 @@ public:
 
     HashTable(int n = 353)
     {
-        table = new List[n];
+        table = new LinkedList[n];
         size = n;
         count = new int[n];
         // vehicle = v;
@@ -107,7 +107,7 @@ public:
     void insert(char a, char b, string vehicle)
     {
         int i = HashFunction(a, b);
-        Node *add = new Node(vehicle);
+        LinkedListNode *add = new LinkedListNode(vehicle);
         table[i].append(add);
     }
 
@@ -115,7 +115,7 @@ public:
     {
         for (int i = 0; i < size; i++)
         {
-            Node *temp = table[i].head;
+            LinkedListNode *temp = table[i].head;
             while (temp != NULL)
             {
                 temp = temp->next;
@@ -137,7 +137,7 @@ public:
         }
     }
 
-    void storeData(Graph g , Vehicles* vehicle)
+    void storeData(Graph g, Vehicles *vehicle)
     {
         for (int i = 0; i < 31; i++)
         {
