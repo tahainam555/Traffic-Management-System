@@ -2,12 +2,12 @@
 #define _HAMDA_H
 #include "taha.h"
 
-struct LinkedListNode
+struct ListNode
 {
-    LinkedListNode *next;
+    ListNode *next;
     string vehicle;
 
-    LinkedListNode(string v = "", LinkedListNode *nxt = NULL)
+    ListNode(string v = "", ListNode *nxt = NULL)
     {
         vehicle = v;
         next = nxt;
@@ -17,9 +17,11 @@ struct LinkedListNode
 class LinkedList
 {
 public:
-    LinkedListNode *head;
+    ListNode *head;
 
-    void append(LinkedListNode *add)
+    LinkedList() : head(NULL) {}
+
+    void append(ListNode *add)
     {
         if (head == NULL)
         {
@@ -27,7 +29,7 @@ public:
             return;
         }
 
-        LinkedListNode *temp = head;
+        ListNode *temp = head;
         while (temp->next != NULL)
         {
             temp = temp->next;
@@ -37,7 +39,7 @@ public:
 
     void display()
     {
-        LinkedListNode *temp = head;
+        ListNode *temp = head;
         while (temp != NULL)
         {
             cout << temp->vehicle << " ";
@@ -52,20 +54,18 @@ class HashTable
 public:
     LinkedList *table;
     int size;
-    int *count;
-    Vehicles *vehicle;
-    // Graph g;
+    int *countArray;
 
     HashTable(int n = 353)
     {
         table = new LinkedList[n];
         size = n;
-        count = new int[n];
+        countArray = new int[n];
         // vehicle = v;
         // g = gg;
         for (int i = 0; i < n; i++)
         {
-            count[i] = 0;
+            countArray[i] = 0;
         }
     }
 
@@ -74,10 +74,10 @@ public:
         int ascii1 = a;
         int ascii2 = b;
 
-        int max = max(ascii1, ascii2);
-        int min = min(ascii1, ascii2);
+        int maximum = max(ascii1, ascii2);
+        int minimum = min(ascii1, ascii2);
 
-        int index = (min * 128 + max);
+        int index = (minimum * 128 + maximum);
         return index % size;
     }
 
@@ -88,9 +88,9 @@ public:
         {
             for (int j = 0; j < 128; j++)
             {
-                int min = min(i, j);
-                int max = max(i, j);
-                if ((min * 128 + max) % size == originalIndex)
+                int minimum = min(i, j);
+                int maximum = max(i, j);
+                if ((minimum * 128 + maximum) % size == originalIndex)
                 {
                     char temp = i;
                     char temp2 = j;
@@ -106,22 +106,10 @@ public:
 
     void insert(char a, char b, string vehicle)
     {
+        cout << "inserting " << vehicle << endl;
         int i = HashFunction(a, b);
-        LinkedListNode *add = new LinkedListNode(vehicle);
+        ListNode *add = new ListNode(vehicle);
         table[i].append(add);
-    }
-
-    void count()
-    {
-        for (int i = 0; i < size; i++)
-        {
-            LinkedListNode *temp = table[i].head;
-            while (temp != NULL)
-            {
-                temp = temp->next;
-                count[i]++;
-            }
-        }
     }
 
     void print()
@@ -133,23 +121,29 @@ public:
             {
                 continue;
             }
-            cout << str[0] << " to " << str[1] << count[i] << endl;
+            cout << str[0] << " to " << str[1] << countArray[i] << endl;
+            table[i].display();
         }
     }
 
-    void storeData(Graph g, Vehicles *vehicle)
+    void storeData(Vehicles *vehicle, Graph &g)
     {
-        for (int i = 0; i < 31; i++)
+        for (int i = 1; i < 31; i++)
         {
+            // cout<<"vehicle "<<vehicle[i].id<<endl;
+            cout << "vehicles : " << vehicle[i].id << " start: " << vehicle[i].start << " end : " << vehicle[i].end << endl;
+
             char a = vehicle[i].start;
             char b = vehicle[i].end;
             my_stack ss;
             ss = Dijkstra(g, a, b);
+            cout<<"YES"<<endl;
             char start = '\0';
             char end = '\0';
             start = ss.getTop();
             end = ss.getTop();
             ss.pop();
+            // cout<<"start "<<start<<" end "<<end<<endl;
             while (!ss.isEmpty())
             {
                 start = end;
@@ -158,8 +152,21 @@ public:
                 insert(start, end, vehicle[i].id);
             }
         }
+        count();
+    }
+
+    void count()
+    {
+        for (int i = 0; i < size; i++)
+        {
+            ListNode *temp = table[i].head;
+            while (temp != NULL)
+            {
+                temp = temp->next;
+                countArray[i]++;
+            }
+        }
     }
 };
 
 #endif
-// okayy end
