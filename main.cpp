@@ -89,6 +89,7 @@ int main(){
     cout << "1: DISPLAY CITY ROAD NETWORK" << endl;
     cout << "2: SIMULATE TRAFFIC" << endl;
     cout << "3: TRAFFIC SIGNAL STATUS" << endl;
+    cout << "4: DISPLAY BLOCKED ROADS" << endl;
     cout << "5: HANDLE EMERGENCY VEHICLE ROUTING" << endl;
     cout << "====================================================" << endl;
     cout << "Enter your choice: ";
@@ -103,7 +104,11 @@ int main(){
     }
     else if(ch == '3'){
         cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
-        // pq.print();
+         pq.displayQueue();
+    }
+    else if(ch == '4')
+    {
+        cout << "=================BLOCKED ROADS==================" << endl;
     }
     else if (ch == '5') {
         cout<<"=================EMERGENCY ROUTE==================" << endl;

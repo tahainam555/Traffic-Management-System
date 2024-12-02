@@ -236,4 +236,9 @@ class emergencyRouting
 
 };
 
+void blocked_road(Graph &g, char intersection1, char intersection2)
+{
+    
+}
+
 #endif 
