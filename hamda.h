@@ -18,8 +18,13 @@ class LinkedList
 {
 public:
     ListNode *head;
+    string path;
 
-    LinkedList() : head(NULL) {}
+    LinkedList(string p = " ", ListNode *h = NULL)
+    {
+        head = h;
+        path = p;
+    }
 
     void append(ListNode *add)
     {
@@ -109,6 +114,11 @@ public:
         cout << "inserting " << vehicle << endl;
         int i = HashFunction(a, b);
         ListNode *add = new ListNode(vehicle);
+        if (table[i].head == NULL)
+        {
+            table[i].path += a;
+            table[i].path += b;
+        }
         table[i].append(add);
     }
 
@@ -116,12 +126,12 @@ public:
     {
         for (int i = 0; i < size; i++)
         {
-            string str = reverseHashFunction(i);
-            if (str == "")
+            // string str = reverseHashFunction(i);
+            if (table[i].path == "")
             {
                 continue;
             }
-            cout << str[0] << " to " << str[1] << countArray[i] << endl;
+            cout << table[i].path[0] << " to " << table[i].path[1] << " " << countArray[i] << endl;
             table[i].display();
         }
     }
@@ -131,13 +141,13 @@ public:
         for (int i = 1; i < 31; i++)
         {
             // cout<<"vehicle "<<vehicle[i].id<<endl;
-            cout << "vehicles : " << vehicle[i].id << " start: " << vehicle[i].start << " end : " << vehicle[i].end << endl;
+            // cout << "vehicles : " << vehicle[i].id << " start: " << vehicle[i].start << " end : " << vehicle[i].end << endl;
 
             char a = vehicle[i].start;
             char b = vehicle[i].end;
             my_stack ss;
             ss = Dijkstra(g, a, b);
-            cout<<"YES"<<endl;
+            cout << "YES" << endl;
             char start = '\0';
             char end = '\0';
             start = ss.getTop();
