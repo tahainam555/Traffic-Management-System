@@ -20,7 +20,7 @@ public:
     ListNode *head;
     string path;
 
-    LinkedList(string p = " ", ListNode *h = NULL)
+    LinkedList(string p = "", ListNode *h = NULL)
     {
         head = h;
         path = p;
@@ -72,6 +72,60 @@ public:
         {
             countArray[i] = 0;
         }
+    }
+
+    my_stack Dijkstra2(Graph &g, char start, char end)
+    {
+        my_stack s;
+        int startVertex = vertexHash(start);
+        int endVertex = vertexHash(end);
+        float *distance = new float[g.vertices];
+        bool *visited = new bool[g.vertices];
+        char *path = new char[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            distance[i] = 999999;
+            visited[i] = false;
+            path[i] = ' ';
+        }
+        distance[startVertex] = 0;
+        for (int i = 0; i < g.vertices; i++)
+        {
+            int minVertex = -1;
+            for (int j = 0; j < g.vertices; j++)
+            {
+                if (!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex]))
+                {
+                    minVertex = j;
+                }
+            }
+            visited[minVertex] = true;
+            for (Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next)
+            {
+                if (distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)])
+                {
+                    distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
+                    path[vertexHash(temp->vertex)] = minVertex + 'A';
+                }
+            }
+        }
+        cout << "All possible paths from " << start << " to " << end << " are: " << endl;
+        for (int i = 0; i < g.vertices; i++)
+        {
+            if (i != startVertex && path[i] != ' ')
+            {
+                cout << (char)(i + 'A') << ": ";
+                char temp = path[i];
+                while (temp != ' ')
+                {
+                    cout << temp << " <- ";
+                    s.push(temp);
+                    temp = path[vertexHash(temp)];
+                }
+                cout << start << " (Distance: " << distance[i] << ")" << endl;
+            }
+        }
+        return s;
     }
 
     int HashFunction(char a, char b)
@@ -138,7 +192,7 @@ public:
 
     void storeData(Vehicles *vehicle, Graph &g)
     {
-        for (int i = 1; i < 31; i++)
+        for (int i = 1; i < 32; i++)
         {
             // cout<<"vehicle "<<vehicle[i].id<<endl;
             // cout << "vehicles : " << vehicle[i].id << " start: " << vehicle[i].start << " end : " << vehicle[i].end << endl;
@@ -146,7 +200,7 @@ public:
             char a = vehicle[i].start;
             char b = vehicle[i].end;
             my_stack ss;
-            ss = Dijkstra(g, a, b);
+            ss = Dijkstra2(g, a, b);
             cout << "YES" << endl;
             char start = '\0';
             char end = '\0';

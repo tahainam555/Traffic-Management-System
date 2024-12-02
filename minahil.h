@@ -236,6 +236,4 @@ class emergencyRouting
 
 };
 
-
-
 #endif 
