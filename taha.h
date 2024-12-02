@@ -425,4 +425,50 @@ void simulateTraffic2(Graph &g, Vehicles *v, int num, TrafficSignal *signals) {
     }
 }
 
+//================================================================================================
+
+struct myRoads{
+    char start;
+    char end;
+    bool isBlocked;
+
+    myRoads(){
+        start = ' ';
+        end = ' ';
+        isBlocked = false;
+    }
+
+    void setRoads(char start, char end, bool status){
+        this->start = start;
+        this->end = end;
+        isBlocked = status;
+    }
+};
+
+void blockageStatus(Graph& g, myRoads *r, int num){
+    for(int i = 0; i < num; i++){
+        if(r[i].isBlocked){
+            cout << "Road between " << r[i].start << " and " << r[i].end << " is blocked" << endl;
+            g.deleteEdge(r[i].start, r[i].end);
+            g.deleteEdge(r[i].end, r[i].start);
+        }
+    }
+
+}
+
+// If user wants to block the road
+void blockRoad(Graph& g, myRoads *r, char start, char end, int num){
+    for(int i = 0; i < num; i++){
+        if(r[i].start == start && r[i].end == end){
+            r[i].isBlocked = true;
+            g.deleteEdge(start, end);
+            g.deleteEdge(end, start);
+            //cout << "Road between " << start << " and " << end << " is blocked" << endl;
+            break;
+        }
+    }
+}
+
+
+
 #endif

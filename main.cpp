@@ -66,6 +66,8 @@ int main()
         num++;
     }
     cout << "this " << num << endl;
+    int numOfVehicles = num;
+    int num2 = num;
     file.close();
     Vehicles *v = new Vehicles[num];
     file2.open("data/vehicles.csv");
@@ -95,6 +97,44 @@ int main()
         //        cout << id << " " << start << " " << end << endl;
         v[i - 1].setVehicles(id, start, end);
     }
+    file2.close();
+
+    file.open("data/road_closures.csv");
+    num = 0;
+    while (getline(file, str))
+    {
+        num++;
+    }
+    cout << num << endl;
+    file.close();
+    myRoads *r = new myRoads[num];
+    file2.open("data/road_closures.csv");
+    i = 0;
+    start = ' ';
+    end = ' ';
+    string status = "";
+    while (getline(file2, str))
+    {
+        if (i > 0 && i < 24)
+        {
+            start = str[0];
+            end = str[2];
+            status = str.substr(4);
+            if (status == "Blocked")
+            {
+                r[i - 1].setRoads(start, end, true);
+            }
+            else
+            {
+                r[i - 1].setRoads(start, end, false);
+            }
+        }
+        i++;
+    }
+    file2.close();
+
+    int counter = 23;
+
 
     char ch;
     cout << "=============WELCOME TO THE ROAD NETWORK=============" << endl;
@@ -115,7 +155,7 @@ int main()
     else if (ch == '2')
     {
         cout << "=================TRAFFIC SIMULATION==================" << endl;
-        simulateTraffic(g, v, num);
+        simulateTraffic(g, v, numOfVehicles);
     }
     else if (ch == '3')
     {
@@ -125,13 +165,25 @@ int main()
     else if (ch == '4')
     {
         cout << "=================CONGESTION STATUS==================" << endl;
-        HashTable h(num);
+        HashTable h;
         h.storeData(v, g);
-        cout << "STORED" << endl;
+        //cout << "STORED" << endl;
         h.print();
     }
     else if(ch == '5'){
         cout << "=================DISPLAY BLOCKED ROADS==================" << endl;
+        blockageStatus(g, r, num);
+        char strt, en;
+        cout << "Enter start intersection: ";
+        cin >> strt;
+        cout << "Enter end intersection: ";
+        cin >> en;
+        cout << "Shortest path from " << strt << " to " << en << " is: ";
+        my_stack s = Dijkstra(g, strt, en);
+        cout << endl;
+        blockRoad(g, r, strt, en, num);
+        r[counter++].setRoads(strt, en, true);
+        blockageStatus(g, r, num);
     }
     else if (ch == '6')
     {
@@ -145,6 +197,7 @@ int main()
         emergencyRouting E1(&g, num);
         E1.ASearch(start, end);
     }
+    
     else
     {
         cout << "Invalid choice" << endl;
