@@ -125,7 +125,7 @@ int main()
     else if (ch == '4')
     {
         cout << "=================CONGESTION STATUS==================" << endl;
-        HashTable h(num);
+        HashTable h;
         h.storeData(v, g);
         cout << "STORED" << endl;
         h.print();

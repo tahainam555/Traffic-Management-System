@@ -52,6 +52,7 @@ public:
         }
         cout << endl;
     }
+
 };
 
 class HashTable
@@ -109,20 +110,20 @@ public:
                 }
             }
         }
-        cout << "All possible paths from " << start << " to " << end << " are: " << endl;
+        // cout << "All possible paths from " << start << " to " << end << " are: " << endl;
         for (int i = 0; i < g.vertices; i++)
         {
             if (i != startVertex && path[i] != ' ')
             {
-                cout << (char)(i + 'A') << ": ";
+                // cout << (char)(i + 'A') << ": ";
                 char temp = path[i];
                 while (temp != ' ')
                 {
-                    cout << temp << " <- ";
+                    // cout << temp << " <- ";
                     s.push(temp);
                     temp = path[vertexHash(temp)];
                 }
-                cout << start << " (Distance: " << distance[i] << ")" << endl;
+                // cout << start << " (Distance: " << distance[i] << ")" << endl;
             }
         }
         return s;
@@ -165,13 +166,13 @@ public:
 
     void insert(char a, char b, string vehicle)
     {
-        cout << "inserting " << vehicle << endl;
+        // cout << "inserting " << vehicle << endl;
         int i = HashFunction(a, b);
         ListNode *add = new ListNode(vehicle);
         if (table[i].head == NULL)
         {
-            table[i].path += a;
             table[i].path += b;
+            table[i].path += a;
         }
         table[i].append(add);
     }
@@ -186,37 +187,88 @@ public:
                 continue;
             }
             cout << table[i].path[0] << " to " << table[i].path[1] << " " << countArray[i] << endl;
-            table[i].display();
+            // table[i].display();
         }
     }
 
     void storeData(Vehicles *vehicle, Graph &g)
     {
-        for (int i = 1; i < 32; i++)
+        for (int i = 1; i < 31; i++)
         {
-            // cout<<"vehicle "<<vehicle[i].id<<endl;
+            cout << "vehicle " << vehicle[i].id << endl;
             // cout << "vehicles : " << vehicle[i].id << " start: " << vehicle[i].start << " end : " << vehicle[i].end << endl;
 
             char a = vehicle[i].start;
             char b = vehicle[i].end;
             my_stack ss;
-            ss = Dijkstra2(g, a, b);
-            cout << "YES" << endl;
+            ss = DFS(g, a, b);
+            // ss = Dijkstra(g, a, b);
+            // ss = Dijkstra2(g, a, b);
+            // ss = DFS(g, a, b);
+            // cout << "YES" << endl;
             char start = '\0';
             char end = '\0';
             start = ss.getTop();
             end = ss.getTop();
             ss.pop();
-            // cout<<"start "<<start<<" end "<<end<<endl;
             while (!ss.isEmpty())
             {
+
                 start = end;
                 end = ss.getTop();
+                cout << "start " << start << " end " << end << endl;
                 ss.pop();
                 insert(start, end, vehicle[i].id);
             }
+            start = end;
+            end = vehicle[i].end;
+            // ss.pop();
+            cout << "start " << start << " end " << end << endl;
+
+            insert(start, end, vehicle[i].id);
         }
         count();
+    }
+
+    void dfs(Graph &g, int v, bool visited[], char end, my_stack &path, bool &found)
+    {
+        visited[v] = true;
+        path.push(v + 'A');
+
+        if (v == vertexHash(end))
+        {
+            found = true;
+            return;
+        }
+
+        for (Node *temp = g.list[v].head; temp != NULL; temp = temp->next)
+        {
+            int adjVertex = vertexHash(temp->vertex);
+            if (!visited[adjVertex])
+            {
+                dfs(g, adjVertex, visited, end, path, found);
+                if (found)
+                    return;
+            }
+        }
+
+        path.pop();
+    }
+
+    my_stack DFS(Graph &g, char start, char end)
+    {
+        my_stack path;
+        bool *visited = new bool[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            visited[i] = false;
+        }
+
+        bool found = false;
+        dfs(g, vertexHash(start), visited, end, path, found);
+
+        delete[] visited;
+        return path;
     }
 
     void count()
