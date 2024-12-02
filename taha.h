@@ -240,6 +240,8 @@ my_stack Dijkstra(Graph &g, char start, char end){
     cout << "Total Distance: " << distance[endVertex] << endl;
     return s;
 }
+
+
 void moveVehicle(Graph &g, Vehicles &v){
     if(v.current == v.end){
         return;
@@ -254,9 +256,8 @@ void simulateTraffic(Graph &g, Vehicles *v, int num){
         cout << "===============VEHICLE " << i << "==================" <<  endl;
         cout << "Vehicle " << v[i].id << " is moving from " << v[i].current << " to " << v[i].end << endl;
         moveVehicle(g, v[i]);
-        Sleep(1);
+        Sleep(1000);
     }
-    
 }
 
 //================================================================================================

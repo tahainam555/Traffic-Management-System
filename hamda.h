@@ -20,7 +20,7 @@ public:
     ListNode *head;
     string path;
 
-    LinkedList(string p = " ", ListNode *h = NULL)
+    LinkedList(string p = "", ListNode *h = NULL)
     {
         head = h;
         path = p;
