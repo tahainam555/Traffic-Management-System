@@ -4,6 +4,93 @@
 #include"taha.h"
 using namespace std;
 
+struct EmergencyVehicle 
+{
+    string vehicleID;
+    char startIntersection;
+    char endIntersection;
+    string priorityLevel;
+    int greenTime;  
+
+    void setVehicle(string id, char start, char end, string priority) 
+    {
+        vehicleID = id;
+        startIntersection = start;
+        endIntersection = end;
+        priorityLevel = priority;
+
+        if (priorityLevel == "High") 
+        {
+            greenTime = 10;  
+        } 
+        else if (priorityLevel == "Medium") 
+        {
+            greenTime = 20;  
+        }
+        else if (priorityLevel == "Low") 
+        {
+            greenTime = 30;  
+        } 
+        else 
+        {
+            greenTime = 0; 
+        }
+    }
+};
+
+void readEmergencyVehicles(Graph &g, EmergencyVehicle *E1, int &num)
+{
+    string str;
+    fstream file("data/emergency_vehicles.csv");
+    
+    num = 0;  
+    while (getline(file, str)) 
+    {
+        num++;
+    }
+    num--;  
+    file.close();
+    
+    file.open("data/emergency_vehicles.csv");
+    int i = 0;
+    string id, priority;
+    char start, end;
+    
+    while (getline(file, str)) 
+    {
+        if (i > 0) 
+        {
+            id = "";
+            start = ' ';
+            end = ' ';
+            priority = "";
+            for (int j = 0; j < str.length(); j++) 
+            {
+                if (str[j] == ',') {
+                    if (start == ' ') 
+                    {
+                        start = str[j+1];
+                    } else if (end == ' ') 
+                    {
+                        end = str[j+1];
+                    } else 
+                    {
+                        priority = str.substr(j+1);  
+                    }
+                }
+                else 
+                {
+                    id += str[j];  
+                }
+            }
+
+            E1[i].setVehicle(id, start, end, priority);
+        }
+        i++;
+    }
+    file.close();
+}
+
 struct priorityQNode 
 {
     int time;         
