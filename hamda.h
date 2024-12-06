@@ -1,6 +1,7 @@
 #ifndef _HAMDA_H
 #define _HAMDA_H
 #include "taha.h"
+#include <queue>
 
 struct ListNode
 {
@@ -52,7 +53,6 @@ public:
         }
         cout << endl;
     }
-
 };
 
 class HashTable
@@ -166,13 +166,15 @@ public:
 
     void insert(char a, char b, string vehicle)
     {
+        if (a == b)
+            return;
         // cout << "inserting " << vehicle << endl;
         int i = HashFunction(a, b);
         ListNode *add = new ListNode(vehicle);
         if (table[i].head == NULL)
         {
-            table[i].path += b;
             table[i].path += a;
+            table[i].path += b;
         }
         table[i].append(add);
     }
@@ -191,6 +193,60 @@ public:
         }
     }
 
+    my_stack BFS(Graph &g, char start, char end)
+    {
+        my_stack path;
+        bool *visited = new bool[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            visited[i] = false;
+        }
+
+        queue<int> q;
+        int *prev = new int[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            prev[i] = -1;
+        }
+
+        int startVertex = vertexHash(start);
+        int endVertex = vertexHash(end);
+        visited[startVertex] = true;
+        q.push(startVertex);
+
+        while (!q.empty())
+        {
+            int current = q.front();
+            q.pop();
+
+            if (current == endVertex)
+            {
+                break;
+            }
+
+            for (Node *temp = g.list[current].head; temp != NULL; temp = temp->next)
+            {
+                int adjVertex = vertexHash(temp->vertex);
+                if (!visited[adjVertex])
+                {
+                    visited[adjVertex] = true;
+                    prev[adjVertex] = current;
+                    q.push(adjVertex);
+                }
+            }
+        }
+
+        for (int at = endVertex; at != -1; at = prev[at])
+        {
+            path.push(at + 'A');
+        }
+
+        delete[] visited;
+        delete[] prev;
+
+        return path;
+    }
+
     void storeData(Vehicles *vehicle, Graph &g)
     {
         for (int i = 1; i < 31; i++)
@@ -201,11 +257,9 @@ public:
             char a = vehicle[i].start;
             char b = vehicle[i].end;
             my_stack ss;
-            ss = DFS(g, a, b);
-            // ss = Dijkstra(g, a, b);
-            // ss = Dijkstra2(g, a, b);
-            // ss = DFS(g, a, b);
-            // cout << "YES" << endl;
+
+            ss = Dijkstra(g, a, b);
+
             char start = '\0';
             char end = '\0';
             start = ss.getTop();
