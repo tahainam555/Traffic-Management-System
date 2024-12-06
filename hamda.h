@@ -1,7 +1,7 @@
 #ifndef _HAMDA_H
 #define _HAMDA_H
 #include "taha.h"
-// #include <queue>
+#include <queue>
 
 struct ListNode
 {
@@ -75,59 +75,59 @@ public:
         }
     }
 
-    // my_stack Dijkstra2(Graph &g, char start, char end)
-    // {
-    //     my_stack s;
-    //     int startVertex = vertexHash(start);
-    //     int endVertex = vertexHash(end);
-    //     float *distance = new float[g.vertices];
-    //     bool *visited = new bool[g.vertices];
-    //     char *path = new char[g.vertices];
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         distance[i] = 999999;
-    //         visited[i] = false;
-    //         path[i] = ' ';
-    //     }
-    //     distance[startVertex] = 0;
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         int minVertex = -1;
-    //         for (int j = 0; j < g.vertices; j++)
-    //         {
-    //             if (!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex]))
-    //             {
-    //                 minVertex = j;
-    //             }
-    //         }
-    //         visited[minVertex] = true;
-    //         for (Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next)
-    //         {
-    //             if (distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)])
-    //             {
-    //                 distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
-    //                 path[vertexHash(temp->vertex)] = minVertex + 'A';
-    //             }
-    //         }
-    //     }
-    //     // cout << "All possible paths from " << start << " to " << end << " are: " << endl;
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         if (i != startVertex && path[i] != ' ')
-    //         {
-    //             // cout << (char)(i + 'A') << ": ";
-    //             char temp = path[i];
-    //             while (temp != ' ')
-    //             {
-    //                 // cout << temp << " <- ";
-    //                 s.push(temp);
-    //                 temp = path[vertexHash(temp)];
-    //             }
-    //             // cout << start << " (Distance: " << distance[i] << ")" << endl;
-    //         }
-    //     }
-    //     return s;
-    // }
+    my_stack Dijkstra2(Graph &g, char start, char end)
+    {
+        my_stack s;
+        int startVertex = vertexHash(start);
+        int endVertex = vertexHash(end);
+        float *distance = new float[g.vertices];
+        bool *visited = new bool[g.vertices];
+        char *path = new char[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            distance[i] = 999999;
+            visited[i] = false;
+            path[i] = ' ';
+        }
+        distance[startVertex] = 0;
+        for (int i = 0; i < g.vertices; i++)
+        {
+            int minVertex = -1;
+            for (int j = 0; j < g.vertices; j++)
+            {
+                if (!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex]))
+                {
+                    minVertex = j;
+                }
+            }
+            visited[minVertex] = true;
+            for (Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next)
+            {
+                if (distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)])
+                {
+                    distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
+                    path[vertexHash(temp->vertex)] = minVertex + 'A';
+                }
+            }
+        }
+        // cout << "All possible paths from " << start << " to " << end << " are: " << endl;
+        for (int i = 0; i < g.vertices; i++)
+        {
+            if (i != startVertex && path[i] != ' ')
+            {
+                // cout << (char)(i + 'A') << ": ";
+                char temp = path[i];
+                while (temp != ' ')
+                {
+                    // cout << temp << " <- ";
+                    s.push(temp);
+                    temp = path[vertexHash(temp)];
+                }
+                // cout << start << " (Distance: " << distance[i] << ")" << endl;
+            }
+        }
+        return s;
+    }
 
     int HashFunction(char a, char b)
     {
@@ -193,59 +193,59 @@ public:
         }
     }
 
-    // my_stack BFS(Graph &g, char start, char end)
-    // {
-    //     my_stack path;
-    //     bool *visited = new bool[g.vertices];
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         visited[i] = false;
-    //     }
+    my_stack BFS(Graph &g, char start, char end)
+    {
+        my_stack path;
+        bool *visited = new bool[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            visited[i] = false;
+        }
 
-    //     queue<int> q;
-    //     int *prev = new int[g.vertices];
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         prev[i] = -1;
-    //     }
+        queue<int> q;
+        int *prev = new int[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            prev[i] = -1;
+        }
 
-    //     int startVertex = vertexHash(start);
-    //     int endVertex = vertexHash(end);
-    //     visited[startVertex] = true;
-    //     q.push(startVertex);
+        int startVertex = vertexHash(start);
+        int endVertex = vertexHash(end);
+        visited[startVertex] = true;
+        q.push(startVertex);
 
-    //     while (!q.empty())
-    //     {
-    //         int current = q.front();
-    //         q.pop();
+        while (!q.empty())
+        {
+            int current = q.front();
+            q.pop();
 
-    //         if (current == endVertex)
-    //         {
-    //             break;
-    //         }
+            if (current == endVertex)
+            {
+                break;
+            }
 
-    //         for (Node *temp = g.list[current].head; temp != NULL; temp = temp->next)
-    //         {
-    //             int adjVertex = vertexHash(temp->vertex);
-    //             if (!visited[adjVertex])
-    //             {
-    //                 visited[adjVertex] = true;
-    //                 prev[adjVertex] = current;
-    //                 q.push(adjVertex);
-    //             }
-    //         }
-    //     }
+            for (Node *temp = g.list[current].head; temp != NULL; temp = temp->next)
+            {
+                int adjVertex = vertexHash(temp->vertex);
+                if (!visited[adjVertex])
+                {
+                    visited[adjVertex] = true;
+                    prev[adjVertex] = current;
+                    q.push(adjVertex);
+                }
+            }
+        }
 
-    //     for (int at = endVertex; at != -1; at = prev[at])
-    //     {
-    //         path.push(at + 'A');
-    //     }
+        for (int at = endVertex; at != -1; at = prev[at])
+        {
+            path.push(at + 'A');
+        }
 
-    //     delete[] visited;
-    //     delete[] prev;
+        delete[] visited;
+        delete[] prev;
 
-    //     return path;
-    // }
+        return path;
+    }
 
     void storeData(Vehicles *vehicle, Graph &g)
     {
@@ -284,46 +284,46 @@ public:
         count();
     }
 
-    // void dfs(Graph &g, int v, bool visited[], char end, my_stack &path, bool &found)
-    // {
-    //     visited[v] = true;
-    //     path.push(v + 'A');
+    void dfs(Graph &g, int v, bool visited[], char end, my_stack &path, bool &found)
+    {
+        visited[v] = true;
+        path.push(v + 'A');
 
-    //     if (v == vertexHash(end))
-    //     {
-    //         found = true;
-    //         return;
-    //     }
+        if (v == vertexHash(end))
+        {
+            found = true;
+            return;
+        }
 
-    //     for (Node *temp = g.list[v].head; temp != NULL; temp = temp->next)
-    //     {
-    //         int adjVertex = vertexHash(temp->vertex);
-    //         if (!visited[adjVertex])
-    //         {
-    //             dfs(g, adjVertex, visited, end, path, found);
-    //             if (found)
-    //                 return;
-    //         }
-    //     }
+        for (Node *temp = g.list[v].head; temp != NULL; temp = temp->next)
+        {
+            int adjVertex = vertexHash(temp->vertex);
+            if (!visited[adjVertex])
+            {
+                dfs(g, adjVertex, visited, end, path, found);
+                if (found)
+                    return;
+            }
+        }
 
-    //     path.pop();
-    // }
+        path.pop();
+    }
 
-    // my_stack DFS(Graph &g, char start, char end)
-    // {
-    //     my_stack path;
-    //     bool *visited = new bool[g.vertices];
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         visited[i] = false;
-    //     }
+    my_stack DFS(Graph &g, char start, char end)
+    {
+        my_stack path;
+        bool *visited = new bool[g.vertices];
+        for (int i = 0; i < g.vertices; i++)
+        {
+            visited[i] = false;
+        }
 
-    //     bool found = false;
-    //     dfs(g, vertexHash(start), visited, end, path, found);
+        bool found = false;
+        dfs(g, vertexHash(start), visited, end, path, found);
 
-    //     delete[] visited;
-    //     return path;
-    // }
+        delete[] visited;
+        return path;
+    }
 
     void count()
     {
