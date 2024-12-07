@@ -42,13 +42,13 @@ The simulator is a perfect blend of **intelligent routing**, **real-time data an
 - 📍 **Optimized Navigation**: Calculates the shortest path using **Dijkstra’s Algorithm**.
 - 🚦 **Real-time Vehicle Tracking**: Tracks vehicle movements across the network during simulation.
 
-### 🚦 Traffic Signal Management
-- ⏱️ **Dynamic Green Timing**: Adjusts signal durations based on traffic density at intersections.
+### 🚦 **Traffic Signal Management**
+- ⏱️ **Dynamic Green Timing**: Adjusts signal durations based on vehicle density at intersections.
 - 🛑 **Priority Overrides**: Clears paths for emergency situations by overriding traffic signals.
 
-### 🚨 Congestion Monitoring
+### 🚨 **Congestion Monitoring**
 - 🔢 **Live Vehicle Count**: Tracks vehicle density at each intersection using **Hash Tables**.
-- 🔍 **Smart Detection**: Identifies and resolves congestion hotspots using **BFS/DFS**.
+- 🔍 **Smart Detection**: Detects congestion based on vehicle counts and handles road closures using **BFS/DFS**.
 
 ### 🆘 **Emergency Vehicle Handling**
 - 🛤️ **Priority Pathfinding**: Finds the fastest route for emergency vehicles using **A* Search Algorithm**.
@@ -67,7 +67,6 @@ The simulator is a perfect blend of **intelligent routing**, **real-time data an
 - 🗺️ **Network Setup**: Automatically set up the road network, intersections, and routes for simulation.
 
 ### 2. **Traffic Simulation**: 🛣️
-- 🚗 **Dynamic Vehicle Routing**: Route vehicles across the network in real-time, adjusting paths based on traffic conditions.
 - 🕹️ **Real-Time Monitoring**: Continuously monitor traffic and update vehicle routes to ensure smooth flow.
 
 ### 3. **Signal Management**: 🚦
@@ -107,6 +106,7 @@ The simulator is a perfect blend of **intelligent routing**, **real-time data an
 ```bash  
 git clone <https://github.com/tahainam555/Traffic-Management-System.git>  
 cd <rTraffic-Management-System>   
+  
 ```  
 
 ### Compile the Code  
