@@ -63,8 +63,8 @@ The **Smart Traffic Management System Simulator** is a C++ project designed to m
 
 ### Clone the Repository  
 ```bash  
-git clone <repository_url>  
-cd <repository_name>  
+git clone <https://github.com/tahainam555/Traffic-Management-System.git>  
+cd <rTraffic-Management-System>  
 ```  
 
 ### Compile the Code  
