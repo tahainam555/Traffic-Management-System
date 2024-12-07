@@ -164,6 +164,31 @@ class Graph{
                 temp = temp->next;
             }
         }
+
+        bool isEdge(char ch, char ch2){
+            int i = vertexHash(ch);
+            Node *temp = list[i].head;
+            while(temp != NULL){
+                if(temp->vertex == ch2){
+                    return true;
+                }
+                temp = temp->next;
+            }
+            return false;
+        }
+
+        float getWeight(char ch, char ch2){
+            int i = vertexHash(ch);
+            Node *temp = list[i].head;
+            while(temp != NULL){
+                if(temp->vertex == ch2){
+                    return temp->weight;
+                }
+                temp = temp->next;
+            }
+            return -1;
+        }
+
         void print(){
             for(int i = 0; i < vertices; i++){
                 char ch = i + 'A';
@@ -381,7 +406,7 @@ struct TrafficSignal{
     TrafficSignal(){
         intersection = ' ';
         greenTime = 0;
-        isGreen = false;
+        isGreen = true;
     }
 
     void setTrafficSignal(char intersection, int time){
@@ -419,19 +444,32 @@ void moveVehicle2(Graph &g, Vehicles &v, TrafficSignal *signals) {
     }
 
     my_stack s = Dijkstra(g, v.current, v.end);
-    v.current = s.getTop();
+    if(s.isEmpty()){
+        cout << "Can't move vehicle " << v.id << " from " << v.current << " to " << v.end << endl;
+        return;
+    }
     cout << "Vehicle " << v.id << " is moving from " << s.getTop() << " to " << v.end << endl;
-    s.pop();
-    cout << "Vehicle " << v.id << " has reached " << v.current << endl;
-    moveVehicle2(g, v, signals);
+    while(!s.isEmpty()){
+        v.current = s.getTop();
+        s.pop();
+        cout << "Vehicle " << v.id << " has reached " << v.current << endl;
+        if(s.isEmpty()){
+            break;
+        }
+        Sleep(g.getWeight(v.current, s.getTop()) * 100);
+    //moveVehicle2(g, v, signals);
+    }
+    Sleep(g.getWeight(v.current, v.end) * 100);
+    cout << "Vehicle " << v.id << " has reached " << v.end << endl;
 }
 
-void simulateTraffic2(Graph &g, Vehicles *v, int num, TrafficSignal *signals) {
-    for (int i = 0; i < num; i++) {
-        cout << "===============VEHICLE " << i + 1 << "==================" << endl;
-        cout << "Vehicle " << v[i].id << " is moving from " << v[i].current << " to " << v[i].end << endl;
-        moveVehicle2(g, v[i], signals);
-        Sleep(1);
+void simulateTraffic2(Graph &g, Vehicles *v, int num, TrafficSignal *signals, priorityQueue &q) {
+    trafficSignal(q, signals, v, num);
+    for (int i = 0; i < num-1; i++) {
+        cout << "===============VEHICLE " << i+1 << "==================" << endl;
+        cout << "Vehicle " << v[i+1].id << " is moving from " << v[i+1].current << " to " << v[i+1].end << endl;
+        moveVehicle2(g, v[i+1], signals);
+        Sleep(1000);
     }
 }
 
@@ -479,8 +517,7 @@ void blockRoads(Graph& g, myRoads *r, char start, char end, int num){
     }
 }
 
-void blockRoad(Graph& g, myRoads r, char start, char end){
-    r.isBlocked = true;
+void blockRoad(Graph& g, char start, char end){
     g.deleteEdge(start, end);
     g.deleteEdge(end, start);
 }
@@ -493,60 +530,60 @@ void unblockRoad(Graph& g, myRoads r, char start, char end){
 
 //================================================================================================
 
-void findAllPaths(Graph &g, char start, char end){
-    my_stack s;
-    int startVertex = vertexHash(start);
-    int endVertex = vertexHash(end);
-    float *distance = new float[g.vertices];
-    bool *visited = new bool[g.vertices];
-    char *path = new char[g.vertices];
-    for(int i = 0; i < g.vertices; i++){
-        distance[i] = 999999;
-        visited[i] = false;
-        path[i] = ' ';
-    }
-    distance[startVertex] = 0;
-    for(int i = 0; i < g.vertices; i++){
-        int minVertex = -1;
-        for(int j = 0; j < g.vertices; j++){
-            if(!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex])){
-                minVertex = j;
-            }
-        }
-        visited[minVertex] = true;
-        for(Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next){
-            if(distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)]){
-                distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
-                path[vertexHash(temp->vertex)] = minVertex + 'A';
-            }
-        }
-    }
-    cout << "All possible paths from " << start << " to " << end << " are: " << endl;
-    for(int i = 0; i < g.vertices; i++){
-        if(i != startVertex && path[i] != ' '){
-            cout << "Path:  ";
-            char temp = path[i];
-            my_stack tempStack;
-            while(temp != ' '){
-                tempStack.push(temp);
-                temp = path[vertexHash(temp)];
-            }
-            while(!tempStack.isEmpty()){
-                char top = tempStack.getTop();
-                cout << top << " ";
-                s.push(top);
-                tempStack.pop();
-            }
-            cout << end << " | Total Weight: " << distance[i] << endl;
-        }
-    }
+// void findAllPaths(Graph &g, char start, char end){
+//     my_stack s;
+//     int startVertex = vertexHash(start);
+//     int endVertex = vertexHash(end);
+//     float *distance = new float[g.vertices];
+//     bool *visited = new bool[g.vertices];
+//     char *path = new char[g.vertices];
+//     for(int i = 0; i < g.vertices; i++){
+//         distance[i] = 999999;
+//         visited[i] = false;
+//         path[i] = ' ';
+//     }
+//     distance[startVertex] = 0;
+//     for(int i = 0; i < g.vertices; i++){
+//         int minVertex = -1;
+//         for(int j = 0; j < g.vertices; j++){
+//             if(!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex])){
+//                 minVertex = j;
+//             }
+//         }
+//         visited[minVertex] = true;
+//         for(Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next){
+//             if(distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)]){
+//                 distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
+//                 path[vertexHash(temp->vertex)] = minVertex + 'A';
+//             }
+//         }
+//     }
+//     cout << "All possible paths from " << start << " to " << end << " are: " << endl;
+//     for(int i = 0; i < g.vertices; i++){
+//         if(i != startVertex && path[i] != ' '){
+//             cout << "Path:  ";
+//             char temp = path[i];
+//             my_stack tempStack;
+//             while(temp != ' '){
+//                 tempStack.push(temp);
+//                 temp = path[vertexHash(temp)];
+//             }
+//             while(!tempStack.isEmpty()){
+//                 char top = tempStack.getTop();
+//                 cout << top << " ";
+//                 s.push(top);
+//                 tempStack.pop();
+//             }
+//             cout << end << " | Total Weight: " << distance[i] << endl;
+//         }
+//     }
 
-    delete[] distance;
-    delete[] visited;
-    delete[] path;
+//     delete[] distance;
+//     delete[] visited;
+//     delete[] path;
 
-    return;
-}
+//     return;
+// }
 
 
 
