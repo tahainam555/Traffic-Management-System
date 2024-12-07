@@ -45,6 +45,7 @@ int main()
     cout << num << endl;
     file.close();
     priorityQueue pq(num);
+    TrafficSignal *signals = new TrafficSignal[num];
     file2.open("data/traffic_signals.csv");
     i = 0;
     while (getline(file2, str))
@@ -54,6 +55,7 @@ int main()
             char intersection = str[0];
             int time = stoi(str.substr(2));
             pq.enqueue(time, intersection);
+            signals[i-1].setTrafficSignal(intersection, time);
         }
         i++;
     }
@@ -195,7 +197,7 @@ int main()
         cout << "Enter end intersection: ";
         cin >> end;
 
-        emergencyRouting E1(&g, num);
+        emergencyRouting E1(&g, signals, num);
         E1.ASearch(start, end);
     }
     else if (ch == '7')
