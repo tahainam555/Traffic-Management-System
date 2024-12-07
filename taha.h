@@ -229,6 +229,11 @@ my_stack Dijkstra(Graph &g, char start, char end){
         }
     }
     cout << "Shortest Path from " << start << " to " << end << " is: ";
+    if (distance[endVertex] == 999999) {
+        cout << "No path exists" << endl;
+        s.top = NULL;
+        return s;
+    }
     cout << end;
     char temp = path[endVertex];
     while(temp != ' '){
@@ -246,7 +251,11 @@ void moveVehicle(Graph &g, Vehicles &v){
     if(v.current == v.end){
         return;
     }
-    Dijkstra(g, v.current, v.end);
+    my_stack s = Dijkstra(g, v.current, v.end);
+    if(s.isEmpty()){
+        cout << "Can't move vehicle " << v.id << " from " << v.current << " to " << v.end << endl;
+        return;
+    }
     v.current = v.end;
     cout << "Vehicle " << v.id << " has reached " << v.current << endl;
 }
@@ -405,7 +414,8 @@ void moveVehicle2(Graph &g, Vehicles &v, TrafficSignal *signals) {
 
     if (!signals[vertexHash(v.current)].isGreen) {
         cout << "Vehicle " << v.id << " is waiting at red signal at " << v.current << endl;
-        return;
+        Sleep(1000);
+        signals[vertexHash(v.current)].isGreen = true;
     }
 
     my_stack s = Dijkstra(g, v.current, v.end);
@@ -457,7 +467,7 @@ void blockageStatus(Graph& g, myRoads *r, int num){
 }
 
 // If user wants to block the road
-void blockRoad(Graph& g, myRoads *r, char start, char end, int num){
+void blockRoads(Graph& g, myRoads *r, char start, char end, int num){
     for(int i = 0; i < num; i++){
         if(r[i].start == start && r[i].end == end){
             r[i].isBlocked = true;
@@ -467,6 +477,75 @@ void blockRoad(Graph& g, myRoads *r, char start, char end, int num){
             break;
         }
     }
+}
+
+void blockRoad(Graph& g, myRoads r, char start, char end){
+    r.isBlocked = true;
+    g.deleteEdge(start, end);
+    g.deleteEdge(end, start);
+}
+
+void unblockRoad(Graph& g, myRoads r, char start, char end){
+    r.isBlocked = false;
+    g.addEdge(start, end, 1);
+    g.addEdge(end, start, 1);
+}
+
+//================================================================================================
+
+void findAllPaths(Graph &g, char start, char end){
+    my_stack s;
+    int startVertex = vertexHash(start);
+    int endVertex = vertexHash(end);
+    float *distance = new float[g.vertices];
+    bool *visited = new bool[g.vertices];
+    char *path = new char[g.vertices];
+    for(int i = 0; i < g.vertices; i++){
+        distance[i] = 999999;
+        visited[i] = false;
+        path[i] = ' ';
+    }
+    distance[startVertex] = 0;
+    for(int i = 0; i < g.vertices; i++){
+        int minVertex = -1;
+        for(int j = 0; j < g.vertices; j++){
+            if(!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex])){
+                minVertex = j;
+            }
+        }
+        visited[minVertex] = true;
+        for(Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next){
+            if(distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)]){
+                distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
+                path[vertexHash(temp->vertex)] = minVertex + 'A';
+            }
+        }
+    }
+    cout << "All possible paths from " << start << " to " << end << " are: " << endl;
+    for(int i = 0; i < g.vertices; i++){
+        if(i != startVertex && path[i] != ' '){
+            cout << "Path:  ";
+            char temp = path[i];
+            my_stack tempStack;
+            while(temp != ' '){
+                tempStack.push(temp);
+                temp = path[vertexHash(temp)];
+            }
+            while(!tempStack.isEmpty()){
+                char top = tempStack.getTop();
+                cout << top << " ";
+                s.push(top);
+                tempStack.pop();
+            }
+            cout << end << " | Total Weight: " << distance[i] << endl;
+        }
+    }
+
+    delete[] distance;
+    delete[] visited;
+    delete[] path;
+
+    return;
 }
 
 
