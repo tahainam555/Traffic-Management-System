@@ -109,7 +109,7 @@ int main()
     }
     //cout << num << endl;
     file.close();
-    myRoads *r = new myRoads[num];
+    myRoads *r = new myRoads[num+5];
     file2.open("data/road_closures.csv");
     i = 0;
     start = ' ';
@@ -125,13 +125,14 @@ int main()
             if (status == "Blocked")
             {
                 r[i - 1].setRoads(start, end, true);
+                blockRoad(g, start, end);
             }
             else
             {
                 r[i - 1].setRoads(start, end, false);
             }
 //            cout << start << " " << end << " " << status << endl;
-            blockRoad(g, r[i], start, end);
+            
         }
         i++;
     }
@@ -149,8 +150,7 @@ int main()
         cout << "5: DISPLAY BLOCKED ROADS" << endl;
         cout << "6: HANDLE EMERGENCY VEHICLE ROUTING" << endl;
         cout << "7: SIMULATE VEHICLE ROUTING" << endl;
-        cout << "8: BLOCK ROAD" << endl;
-        cout << "9: UNBLOCK ROAD" << endl;
+        cout << "8: UNBLOCK ROAD" << endl;
         cout << "0: EXIT" << endl;
         cout << "====================================================" << endl;
         cout << "Enter your choice: ";
@@ -164,6 +164,7 @@ int main()
         {
             cout << "=================TRAFFIC SIMULATION==================" << endl;
             simulateTraffic(g, v, numOfVehicles);
+            //simulateTraffic2(g, v, num2, signals, pq);
         }
         else if (ch == '3')
         {
@@ -187,9 +188,18 @@ int main()
             cin >> strt;
             cout << "Enter end intersection: ";
             cin >> en;
-            cout << "Shortest path from " << strt << " to " << en << " is: ";
-            my_stack s = Dijkstra(g, strt, en);
-            cout << endl;
+            // cout << "Shortest path from " << strt << " to " << en << " is: ";
+            // my_stack s = Dijkstra(g, strt, en);
+            // cout << endl;
+            if(counter == num+5){
+                cout << "All roads are blocked" << endl;
+                continue;
+            }
+            if(!g.isEdge(strt, en)){
+                cout << "Road between " << strt << " and " << en << " does not exist" << endl;
+                continue;
+            }
+
             blockRoads(g, r, strt, en, num);
             r[counter++].setRoads(strt, en, true);
             blockageStatus(g, r, num);
@@ -208,7 +218,7 @@ int main()
         }
         else if (ch == '7')
         {
-            cout << "============SIMULATING VEHICLE ROUTING" << endl;
+            cout << "============SIMULATING VEHICLE ROUTING================" << endl;
             char start = '\0', end = '\0';
             cout << "Enter start intersection: ";
             cin >> start;
@@ -218,21 +228,6 @@ int main()
             //findAllPaths(g, start, end);
         }
         else if (ch == '8')
-        {
-            cout << "=================BLOCK ROAD==================" << endl;
-            char strt, en;
-            cout << "Enter start intersection: ";
-            cin >> strt;
-            cout << "Enter end intersection: ";
-            cin >> en;
-            for(int i = 0; i < num; i++){
-                if(r[i].start == strt && r[i].end == en){
-                    blockRoad(g, r[i], strt, en);
-                    break;
-                }
-            }
-        }
-        else if (ch == '9')
         {
             cout << "=================UNBLOCK ROAD==================" << endl;
             char strt, en;
@@ -246,6 +241,10 @@ int main()
                     break;
                 }
             }
+        }
+        else if (ch == '9')
+        {
+            simulateTraffic2(g, v, num2, signals, pq);
         }
         else if (ch == '0')
         {

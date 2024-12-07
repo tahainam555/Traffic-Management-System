@@ -202,6 +202,9 @@ public:
             {
                 continue;
             }
+            if(table[i].path[0] == ' '){
+                continue;
+            }
             cout << table[i].path[0] << " to " << table[i].path[1] << " " << countArray[i] << endl;
             // table[i].display();
         }
