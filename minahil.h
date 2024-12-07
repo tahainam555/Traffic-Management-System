@@ -217,15 +217,20 @@ class emergencyRouting
         char *previous;      
         priorityQ *P1;
         Graph *graph;
+        TrafficSignal* signals;
+        int signalCount;
+        my_stack S1;
     
     public:
-        emergencyRouting(Graph* G1, int num)
+        emergencyRouting(Graph* G1, TrafficSignal* TS, int num)
         {
             graph = G1;
             distance = new float[num];
             visited = new bool[num];
             previous = new char[num];
             P1 = new priorityQ(num);
+            signals = TS;
+            signalCount = num;
 
             for (int i = 0; i<num; i++)
             {
@@ -244,48 +249,76 @@ class emergencyRouting
             delete P1;
         }
 
+        void overrideSignals(char intersection)
+        {
+            int index = vertexHash(intersection);
+            if (index < signalCount)
+            {
+                signals[index].isGreen = true;
+                signals[index].greenTime = 999;
+                cout<<"Traffic signal at "<<intersection<<" overridden"<<endl;
+            }
+        }
+
+        void restoreSignals()
+        {
+            while (!S1.isEmpty())
+            {
+                char intersection = S1.getTop();
+                S1.pop();
+                int index = vertexHash(intersection);
+                if (index < signalCount)
+                {
+                    signals[index].isGreen = false;
+                    signals[index].greenTime = 0;
+                    cout<<"Traffic signal at "<<intersection<<" restored"<<endl;
+                }
+
+            }
+        }
+
         void ASearch(char start, char end)
         {
             cout<<"Emergency vehicle is being routed..."<<endl;
 
             int startVertex = vertexHash(start);
-            int endVertex = vertexHash(end);    
+            int endVertex = vertexHash(end);
 
             distance[startVertex] = 0;
             P1->enqueue(0, start);
 
-            while (!P1->isEmpty()) 
+            while (!P1->isEmpty())
             {
                 char current = P1->peekIntersection();
                 P1->dequeue();
 
                 int currVertex = vertexHash(current);
-                if (visited[currVertex]) 
+                if (visited[currVertex])
                 {
                     continue;
                 }
                 visited[currVertex] = true;
 
-                if (current == end) 
+                if (current == end)
                 {
                     break;
                 }
 
-                Node* neighbour = graph->list[currVertex].head;
-                while (neighbour != NULL) 
+                Node *neighbour = graph->list[currVertex].head;
+                while (neighbour != NULL)
                 {
                     int neighborVertex = vertexHash(neighbour->vertex);
-                    if (visited[neighborVertex]) 
+                    if (visited[neighborVertex])
                     {
                         neighbour = neighbour->next;
                         continue;
                     }
 
                     float newCost = distance[currVertex] + neighbour->weight;
-                    float heuristic = abs(neighborVertex - endVertex); 
+                    float heuristic = abs(neighborVertex - endVertex);
                     float totalCost = newCost + heuristic;
 
-                    if (newCost < distance[neighborVertex]) 
+                    if (newCost < distance[neighborVertex])
                     {
                         distance[neighborVertex] = newCost;
                         previous[neighborVertex] = current;
@@ -296,8 +329,19 @@ class emergencyRouting
                 }
             }
 
+            char current = end;
+            while (current != start)
+            {
+                overrideSignals(current);  
+                S1.push(current);
+                current = previous[vertexHash(current)];
+            }
+            overrideSignals(start);
+            S1.push(start);
+
             printPath(start, end);
 
+            restoreSignals(); 
         }
 
         void printPath(char start, char end) 
@@ -323,4 +367,4 @@ class emergencyRouting
 
 };
 
-#endif 
+#endif
