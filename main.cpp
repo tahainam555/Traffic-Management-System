@@ -144,13 +144,14 @@ int main()
     while(1){
         cout << "=============WELCOME TO THE ROAD NETWORK=============" << endl;
         cout << "1: DISPLAY CITY ROAD NETWORK" << endl;
-        cout << "2: SIMULATE TRAFFIC" << endl;
+        cout << "2: SHORTEST PATH" << endl;
         cout << "3: TRAFFIC SIGNAL STATUS" << endl;
         cout << "4: CONGESTION STATUS" << endl;
         cout << "5: DISPLAY BLOCKED ROADS" << endl;
         cout << "6: HANDLE EMERGENCY VEHICLE ROUTING" << endl;
         cout << "7: SIMULATE VEHICLE ROUTING" << endl;
         cout << "8: UNBLOCK ROAD" << endl;
+        cout << "9: SIMULATE TRAFFIC" << endl;
         cout << "0: EXIT" << endl;
         cout << "====================================================" << endl;
         cout << "Enter your choice: ";
@@ -162,8 +163,15 @@ int main()
         }
         else if (ch == '2')
         {
-            cout << "=================TRAFFIC SIMULATION==================" << endl;
-            simulateTraffic(g, v, numOfVehicles);
+            cout << "=================SHORTEST PATH==================" << endl;
+            char strt, en;
+            cout << "Enter start intersection: ";
+            cin >> strt;
+            cout << "Enter end intersection: ";
+            cin >> en;
+            cout << "Shortest path from " << strt << " to " << en << " is: ";
+            my_stack s = Dijkstra(g, strt, en);
+            cout << endl;
             //simulateTraffic2(g, v, num2, signals, pq);
         }
         else if (ch == '3')
