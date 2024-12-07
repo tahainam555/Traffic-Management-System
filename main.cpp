@@ -232,8 +232,8 @@ int main()
             cin >> start;
             cout << "Enter end intersection: ";
             cin >> end;
-            simulation(g, start, end);
-            //findAllPaths(g, start, end);
+            //simulation(g, start, end);
+            findAllPaths(g, start, end);
         }
         else if (ch == '8')
         {

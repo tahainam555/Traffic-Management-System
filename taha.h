@@ -530,61 +530,46 @@ void unblockRoad(Graph& g, myRoads r, char start, char end){
 
 //================================================================================================
 
-// void findAllPaths(Graph &g, char start, char end){
-//     my_stack s;
-//     int startVertex = vertexHash(start);
-//     int endVertex = vertexHash(end);
-//     float *distance = new float[g.vertices];
-//     bool *visited = new bool[g.vertices];
-//     char *path = new char[g.vertices];
-//     for(int i = 0; i < g.vertices; i++){
-//         distance[i] = 999999;
-//         visited[i] = false;
-//         path[i] = ' ';
-//     }
-//     distance[startVertex] = 0;
-//     for(int i = 0; i < g.vertices; i++){
-//         int minVertex = -1;
-//         for(int j = 0; j < g.vertices; j++){
-//             if(!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex])){
-//                 minVertex = j;
-//             }
-//         }
-//         visited[minVertex] = true;
-//         for(Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next){
-//             if(distance[minVertex] + temp->weight < distance[vertexHash(temp->vertex)]){
-//                 distance[vertexHash(temp->vertex)] = distance[minVertex] + temp->weight;
-//                 path[vertexHash(temp->vertex)] = minVertex + 'A';
-//             }
-//         }
-//     }
-//     cout << "All possible paths from " << start << " to " << end << " are: " << endl;
-//     for(int i = 0; i < g.vertices; i++){
-//         if(i != startVertex && path[i] != ' '){
-//             cout << "Path:  ";
-//             char temp = path[i];
-//             my_stack tempStack;
-//             while(temp != ' '){
-//                 tempStack.push(temp);
-//                 temp = path[vertexHash(temp)];
-//             }
-//             while(!tempStack.isEmpty()){
-//                 char top = tempStack.getTop();
-//                 cout << top << " ";
-//                 s.push(top);
-//                 tempStack.pop();
-//             }
-//             cout << end << " | Total Weight: " << distance[i] << endl;
-//         }
-//     }
 
-//     delete[] distance;
-//     delete[] visited;
-//     delete[] path;
+void dfsFindPaths(Graph &g, char current, char end, bool visited[], my_stack &pathStack) {
+    visited[vertexHash(current)] = true;
+    pathStack.push(current);
 
-//     return;
-// }
+    if (current == end) {
+        cout << "Path: ";
+        my_stack tempStack;
 
+        while (!pathStack.isEmpty()) {
+            char top = pathStack.getTop();
+            tempStack.push(top);
+            pathStack.pop();
+        }
+        while (!tempStack.isEmpty()) {
+            char top = tempStack.getTop();
+            cout << top << " ";
+            pathStack.push(top); 
+            tempStack.pop();
+        }
+        cout << endl;
+    } else {
+        Node *neighbor = g.list[vertexHash(current)].head;
+        while (neighbor != NULL) {
+            if (!visited[vertexHash(neighbor->vertex)]) {
+                dfsFindPaths(g, neighbor->vertex, end, visited, pathStack);
+            }
+            neighbor = neighbor->next;
+        }
+    }
 
+    visited[vertexHash(current)] = false;
+    pathStack.pop();
+}
+
+void findAllPaths(Graph &g, char start, char end) {
+    bool visited[26] = {false}; 
+    my_stack pathStack;                 
+    cout << "All possible paths from " << start << " to " << end << " are:\n";
+    dfsFindPaths(g, start, end, visited, pathStack);
+}
 
 #endif
