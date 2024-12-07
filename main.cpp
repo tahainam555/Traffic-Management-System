@@ -17,7 +17,7 @@ int main()
         num++;
     }
     num--;
-    cout << num << endl;
+//    cout << num << endl;
     file.close();
 
     Graph g(num);
@@ -42,7 +42,7 @@ int main()
     {
         num++;
     }
-    cout << num << endl;
+    //cout << num << endl;
     file.close();
     priorityQueue pq(num);
     TrafficSignal *signals = new TrafficSignal[num];
@@ -67,7 +67,7 @@ int main()
     {
         num++;
     }
-    cout << "this " << num << endl;
+    //cout << "this " << num << endl;
     int numOfVehicles = num;
     int num2 = num;
     file.close();
@@ -107,7 +107,7 @@ int main()
     {
         num++;
     }
-    cout << num << endl;
+    //cout << num << endl;
     file.close();
     myRoads *r = new myRoads[num];
     file2.open("data/road_closures.csv");
@@ -130,6 +130,8 @@ int main()
             {
                 r[i - 1].setRoads(start, end, false);
             }
+//            cout << start << " " << end << " " << status << endl;
+            blockRoad(g, r[i], start, end);
         }
         i++;
     }
@@ -138,81 +140,123 @@ int main()
     int counter = 23;
 
     char ch;
-    cout << "=============WELCOME TO THE ROAD NETWORK=============" << endl;
-    cout << "1: DISPLAY CITY ROAD NETWORK" << endl;
-    cout << "2: SIMULATE TRAFFIC" << endl;
-    cout << "3: TRAFFIC SIGNAL STATUS" << endl;
-    cout << "4: CONGESTION STATUS" << endl;
-    cout << "5: DISPLAY BLOCKED ROADS" << endl;
-    cout << "6: HANDLE EMERGENCY VEHICLE ROUTING" << endl;
-    cout << "7: SIMULATE VEHICLE ROUTING" << endl;
-    cout << "====================================================" << endl;
-    cout << "Enter your choice: ";
-    cin >> ch;
-    if (ch == '1')
-    {
-        cout << "=================CITY ROAD NETWORK==================" << endl;
-        g.print();
-    }
-    else if (ch == '2')
-    {
-        cout << "=================TRAFFIC SIMULATION==================" << endl;
-        simulateTraffic(g, v, numOfVehicles);
-    }
-    else if (ch == '3')
-    {
-        cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
-        pq.displayQueue();
-    }
-    else if (ch == '4')
-    {
-        cout << "=================CONGESTION STATUS==================" << endl;
-        HashTable h;
-        h.storeData(v, g);
-        // cout << "STORED" << endl;
-        h.print();
-    }
-    else if (ch == '5')
-    {
-        cout << "=================DISPLAY BLOCKED ROADS==================" << endl;
-        blockageStatus(g, r, num);
-        char strt, en;
-        cout << "Enter start intersection: ";
-        cin >> strt;
-        cout << "Enter end intersection: ";
-        cin >> en;
-        cout << "Shortest path from " << strt << " to " << en << " is: ";
-        my_stack s = Dijkstra(g, strt, en);
-        cout << endl;
-        blockRoad(g, r, strt, en, num);
-        r[counter++].setRoads(strt, en, true);
-        blockageStatus(g, r, num);
-    }
-    else if (ch == '6')
-    {
-        cout << "=================EMERGENCY ROUTE==================" << endl;
-        char start, end;
-        cout << "Enter start intersection: ";
-        cin >> start;
-        cout << "Enter end intersection: ";
-        cin >> end;
+    while(1){
+        cout << "=============WELCOME TO THE ROAD NETWORK=============" << endl;
+        cout << "1: DISPLAY CITY ROAD NETWORK" << endl;
+        cout << "2: SIMULATE TRAFFIC" << endl;
+        cout << "3: TRAFFIC SIGNAL STATUS" << endl;
+        cout << "4: CONGESTION STATUS" << endl;
+        cout << "5: DISPLAY BLOCKED ROADS" << endl;
+        cout << "6: HANDLE EMERGENCY VEHICLE ROUTING" << endl;
+        cout << "7: SIMULATE VEHICLE ROUTING" << endl;
+        cout << "8: BLOCK ROAD" << endl;
+        cout << "9: UNBLOCK ROAD" << endl;
+        cout << "0: EXIT" << endl;
+        cout << "====================================================" << endl;
+        cout << "Enter your choice: ";
+        cin >> ch;
+        if (ch == '1')
+        {
+            cout << "=================CITY ROAD NETWORK==================" << endl;
+            g.print();
+        }
+        else if (ch == '2')
+        {
+            cout << "=================TRAFFIC SIMULATION==================" << endl;
+            simulateTraffic(g, v, numOfVehicles);
+        }
+        else if (ch == '3')
+        {
+            cout << "=================TRAFFIC SIGNAL STATUS==================" << endl;
+            pq.displayQueue();
+        }
+        else if (ch == '4')
+        {
+            cout << "=================CONGESTION STATUS==================" << endl;
+            HashTable h;
+            h.storeData(v, g);
+            // cout << "STORED" << endl;
+            h.print();
+        }
+        else if (ch == '5')
+        {
+            cout << "=================DISPLAY BLOCKED ROADS==================" << endl;
+            blockageStatus(g, r, num);
+            char strt, en;
+            cout << "Enter start intersection: ";
+            cin >> strt;
+            cout << "Enter end intersection: ";
+            cin >> en;
+            cout << "Shortest path from " << strt << " to " << en << " is: ";
+            my_stack s = Dijkstra(g, strt, en);
+            cout << endl;
+            blockRoads(g, r, strt, en, num);
+            r[counter++].setRoads(strt, en, true);
+            blockageStatus(g, r, num);
+        }
+        else if (ch == '6')
+        {
+            cout << "=================EMERGENCY ROUTE==================" << endl;
+            char start, end;
+            cout << "Enter start intersection: ";
+            cin >> start;
+            cout << "Enter end intersection: ";
+            cin >> end;
 
-        emergencyRouting E1(&g, signals, num);
-        E1.ASearch(start, end);
-    }
-    else if (ch == '7')
-    {
-        cout << "Simulating vehicle routing" << endl;
-        char start = '\0', end = '\0';
-        cout << "Enter start intersection: ";
-        cin >> start;
-        cout << "Enter end intersection: ";
-        cin >> end;
-        simulation(g, start, end);
+            emergencyRouting E1(&g, signals, num);
+            E1.ASearch(start, end);
+        }
+        else if (ch == '7')
+        {
+            cout << "============SIMULATING VEHICLE ROUTING" << endl;
+            char start = '\0', end = '\0';
+            cout << "Enter start intersection: ";
+            cin >> start;
+            cout << "Enter end intersection: ";
+            cin >> end;
+            simulation(g, start, end);
+            //findAllPaths(g, start, end);
+        }
+        else if (ch == '8')
+        {
+            cout << "=================BLOCK ROAD==================" << endl;
+            char strt, en;
+            cout << "Enter start intersection: ";
+            cin >> strt;
+            cout << "Enter end intersection: ";
+            cin >> en;
+            for(int i = 0; i < num; i++){
+                if(r[i].start == strt && r[i].end == en){
+                    blockRoad(g, r[i], strt, en);
+                    break;
+                }
+            }
+        }
+        else if (ch == '9')
+        {
+            cout << "=================UNBLOCK ROAD==================" << endl;
+            char strt, en;
+            cout << "Enter start intersection: ";
+            cin >> strt;
+            cout << "Enter end intersection: ";
+            cin >> en;
+            for(int i = 0; i < num; i++){
+                if(r[i].start == strt && r[i].end == en){
+                    unblockRoad(g, r[i], strt, en);
+                    break;
+                }
+            }
+        }
+        else if (ch == '0')
+        {
+            cout << "Exiting..." << endl;
+            break;
+        }
+        else
+        {
+            cout << "Invalid choice" << endl;
+        }
     }
 
-    else
-    {
-        cout << "Invalid choice" << endl;
-    }
+
 }
