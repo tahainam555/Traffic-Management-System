@@ -480,6 +480,7 @@ struct TrafficSignal{
 void trafficSignal(priorityQueue &q, TrafficSignal *t,Vehicles* v, int num){
     for (int i = 0; i < num; i++) {
         int density = vehicleDensity(t[i].intersection, v, num);
+        t[i].greenTime = density+10;
         q.enqueue(density, t[i].intersection);
     }
 
