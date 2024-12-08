@@ -175,14 +175,14 @@ The system efficiently calculates the shortest path between two intersections us
 ## 🚧 **Blocked Roads**  
 Blocked roads are dynamically handled, and the road network is updated accordingly.  
 
-![Blocked Roads](images/blocked_road.png)
+![Blocked Roads](images/blocked_roads.png)
 
 ---
 
 ## 🚦 **Traffic Signal Status**  
 Displays the current signal timings and dynamically adjusts them based on traffic density.  
 
-![Traffic Signal Status](images/traffic_signal_status.png)
+![Traffic Signal Status](images/Traffic_signal_status.png)
 
 ---
 
