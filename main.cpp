@@ -260,14 +260,16 @@ class VehiclesPQ{
             }
         }
 
-        void dequeue(){
+        Vehicles dequeue(){
             if(head == NULL){
                 cout << "Queue is empty" << endl;
-                return;
+                return Vehicles();
             }
             Vehicles *temp = head;
             head = head->next;
+            Vehicles v = *temp;
             delete temp;
+            return v;
         }
 
         void display(){
@@ -484,7 +486,7 @@ void trafficSignal(priorityQueue &q, TrafficSignal *t,Vehicles* v, int num){
     while (q.size > 1) {
         char intersection = q.data[1].intersection;
         int density = q.data[1].density;
-        cout << "Adjusting Traffic Signal at " << intersection << " for " << density << " vehicles" << endl;
+        cout << "Adjusting Traffic Signal at " << intersection << endl;
         t[intersection - 'A'].greenTime = density; 
         t[intersection - 'A'].isGreen = true; 
         q.dequeue();
@@ -522,15 +524,7 @@ void moveVehicle2(Graph &g, Vehicles &v, TrafficSignal *signals) {
     cout << "Vehicle " << v.id << " has reached " << v.end << endl;
 }
 
-void simulateTraffic2(Graph &g, Vehicles *v, int num, TrafficSignal *signals, priorityQueue &q) {
-    trafficSignal(q, signals, v, num);
-    for (int i = 0; i < num-1; i++) {
-        cout << "===============VEHICLE " << i+1 << "==================" << endl;
-        cout << "Vehicle " << v[i+1].id << " is moving from " << v[i+1].current << " to " << v[i+1].end << endl;
-        moveVehicle2(g, v[i+1], signals);
-        Sleep(1000);
-    }
-}
+
 
 //================================================================================================
 
@@ -1155,6 +1149,10 @@ class emergencyRouting
 
             // Construct the path
             char current = end;
+            // for(int i=0; i<graph->vertices; i++)
+            // {
+            //     signals[i].isGreen = false;
+            // }
             while (current != start) {
                 overrideSignals(current);  
                 S1.push(current);
@@ -1190,6 +1188,43 @@ class emergencyRouting
         }
 
 };
+
+void simulateTraffic2(Graph &g, Vehicles *v,VehiclesPQ& vpq, int num, TrafficSignal *signals, priorityQueue &q, emergencyRouting E1) {
+    trafficSignal(q, signals, v, num);
+    int i=0;
+    int j=num-1;
+    int count=0;
+    while(i!=j){
+        if(count%2==0){
+            cout << "===============VEHICLE " << count+1 << "==================" << endl;
+            cout << "Vehicle " << v[i+1].id << " is moving from " << v[i+1].current << " to " << v[i+1].end << endl;
+            moveVehicle2(g, v[i+1], signals);
+            i++;
+        }
+        else{
+            cout << "===============VEHICLE " << count+1 << "==================" << endl;
+            cout << "Vehicle " << v[j].id << " is moving from " << v[j].current << " to " << v[j].end << endl;
+            if(v[j].priority == 0||v[j].priority == 5){
+                E1.ASearch(v[j].current, v[j].end);
+            }
+            else{
+                moveVehicle2(g, v[j], signals);
+            }
+            j--;
+        }
+        count++;
+        Sleep(1000);
+    }
+    // for (int i = 0, j=num; i < num-1; i++) {
+    //     cout << "===============VEHICLE " << i+1 << "==================" << endl;
+    //     cout << "Vehicle " << v[i+1].id << " is moving from " << v[i+1].current << " to " << v[i+1].end << endl;
+    //     moveVehicle2(g, v[i+1], signals);
+    //     if(v[i+1].priority == 0){
+    //         E1.ASearch(v[i+1].current, v[i+1].end);
+    //     }
+    //     Sleep(1000);
+    // }
+}
 
 
 int main()
@@ -1257,7 +1292,9 @@ int main()
     int numOfVehicles = num;
     int num2 = num;
     file.close();
-    Vehicles *v = new Vehicles[num];
+    VehiclesPQ vpq;
+    Vehicles *v = new Vehicles[num+50];
+    int vehCount = 0;
     file2.open("data/vehicles.csv");
     i = 0;
     string id = "";
@@ -1283,9 +1320,63 @@ int main()
         }
         i++;
         //        cout << id << " " << start << " " << end << endl;
-        v[i - 1].setVehicles(id, start, end, 10);
+        v[vehCount++].setVehicles(id, start, end, 10);
+        //vehCount++;
+        //vpq.enqueue(id, start, end, 10);
     }
     file2.close();
+
+    file.open("data/emergency_vehicles.csv");
+    num = 0;
+    while (getline(file, str))
+    {
+        num++;
+    }
+    file.close();
+    id = "";
+    start = ' ';
+    end = ' ';
+    string priority = "";
+    file2.open("data/emergency_vehicles.csv");
+    while(getline(file2, str)){
+        if(i > 0){
+            id = "";
+            start = ' ';
+            end = ' ';
+            priority = "";
+            for(int j = 0; j < str.length(); j++){
+                if(str[j] == ','){
+                    if(start == ' '){
+                        start = str[j+1];
+                    }
+                    else if(end == ' '){
+                        end = str[j+1];
+                    }
+                    else{
+                        priority = str.substr(j+1);
+                    }
+                }
+                else if(start == ' '){
+                    id += str[j];
+                }
+            }
+            if(id == ""){
+                break;
+            }
+            cout << id << " " << start << " " << end << " " << priority << endl;
+            if(priority == "High"){
+                vpq.enqueue(id, start, end, 0);
+                v[vehCount++].setVehicles(id, start, end, 0);
+            }
+            else if(priority == "Medium"){
+                vpq.enqueue(id, start, end, 5);
+                v[vehCount++].setVehicles(id, start, end, 5);
+            }
+        }
+    i++;
+    }
+    file2.close();
+
 
     file.open("data/road_closures.csv");
     num = 0;
@@ -1325,6 +1416,8 @@ int main()
     file2.close();
 
     int counter = 23;
+
+    emergencyRouting E1(&g, signals, num);
 
     char ch;
     while(1){
@@ -1407,7 +1500,7 @@ int main()
             cout << "Enter end intersection: ";
             cin >> end;
 
-            emergencyRouting E1(&g, signals, num);
+            
             E1.ASearch(start, end);
         }
         else if (ch == '7')
@@ -1440,7 +1533,7 @@ int main()
         }
         else if (ch == '9')
         {
-            simulateTraffic2(g, v, num2, signals, pq);
+            simulateTraffic2(g, v, vpq,  vehCount, signals, pq, E1);
         }
         else if (ch == '0')
         {
