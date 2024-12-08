@@ -133,22 +133,6 @@ To run the Smart Traffic Management System, make sure the following CSV files ar
 
 ---
 
-## 📊 Sample Outputs  
-
-### Graph Visualization  
-```  
-Intersection A -> B (Travel Time: 5 mins)  
-Intersection B -> C (Travel Time: 8 mins)  
-```  
-
-### Real-Time Traffic Updates  
-```  
-Congestion Alert: Intersection A -> B  
-Rerouting vehicles...  
-```  
-
----
-
 ## 📦 Deliverables  
 
 ### 🔑 **Key Deliverables**  
@@ -166,6 +150,61 @@ Rerouting vehicles...
 
 🎯 **Objective**: These deliverables showcase the system’s ability to manage real-world traffic challenges efficiently while providing real-time insights!
  
+---
+
+# 📊 Output Demonstrations  
+
+Below are the output visuals demonstrating various functionalities of the **Smart Traffic Management System Simulator**.
+
+---
+
+## 🗂️ **Main Menu**  
+Here’s the user-friendly main menu that provides easy access to all system features.  
+
+![Main Menu](images/menu.png)
+
+---
+
+## 🚗 **Shortest Path Calculation**  
+The system efficiently calculates the shortest path between two intersections using **Dijkstra’s Algorithm**.  
+
+![Shortest Path Calculation](images/Shortest_path.png)
+
+---
+
+## 🚧 **Blocked Roads**  
+Blocked roads are dynamically handled, and the road network is updated accordingly.  
+
+![Blocked Roads](images/blocked_road.png)
+
+---
+
+## 🚦 **Traffic Signal Status**  
+Displays the current signal timings and dynamically adjusts them based on traffic density.  
+
+![Traffic Signal Status](images/traffic_signal_status.png)
+
+---
+
+## 📈 **Congestion Monitoring**  
+Monitors vehicle density at each intersection and highlights congested areas in real-time.  
+
+![Congestion Monitoring](images/congestion_status.png)
+
+---
+
+## 🚨 **Emergency Vehicle Routing**  
+Prioritizes emergency vehicles by finding the fastest path using **A* Search Algorithm** and clears intersections.  
+
+![Emergency Vehicle Routing](images/emergency_routing.png)
+
+---
+
+## 🔓 **Unblock Roads**  
+Users can unblock previously closed roads, and the system restores the original traffic flow.  
+
+![Unblock Roads](images/unblock_road.png)
+
 ---
 
 ## 👨‍💻 **Contributors**  
