@@ -398,7 +398,7 @@ class priorityQueue{
         priorityQueue(int num){
             data = new priorityQueueNode[num+1];
             size = 1;
-            capacity = num;
+            capacity = 27;
         }
 
         void enqueue(int density, char intersection){
@@ -583,11 +583,12 @@ void unblockRoad(Graph& g, myRoads r, char start, char end){
 //================================================================================================
 
 
-void dfsFindPaths(Graph &g, char current, char end, bool visited[], my_stack &pathStack) {
+void dfsFindPaths(Graph &g, char current, char end, bool visited[], my_stack &pathStack, float currentCost, bool& pathFound) {
     visited[vertexHash(current)] = true;
     pathStack.push(current);
 
     if (current == end) {
+        pathFound = true;
         cout << "Path: ";
         my_stack tempStack;
 
@@ -599,15 +600,15 @@ void dfsFindPaths(Graph &g, char current, char end, bool visited[], my_stack &pa
         while (!tempStack.isEmpty()) {
             char top = tempStack.getTop();
             cout << top << " ";
-            pathStack.push(top); 
+            pathStack.push(top);  
             tempStack.pop();
         }
-        cout << endl;
+        cout << "| Cost: " << currentCost << endl;
     } else {
         Node *neighbor = g.list[vertexHash(current)].head;
         while (neighbor != NULL) {
             if (!visited[vertexHash(neighbor->vertex)]) {
-                dfsFindPaths(g, neighbor->vertex, end, visited, pathStack);
+                dfsFindPaths(g, neighbor->vertex, end, visited, pathStack, currentCost + neighbor->weight, pathFound);
             }
             neighbor = neighbor->next;
         }
@@ -618,12 +619,16 @@ void dfsFindPaths(Graph &g, char current, char end, bool visited[], my_stack &pa
 }
 
 void findAllPaths(Graph &g, char start, char end) {
-    bool visited[26] = {false}; 
-    my_stack pathStack;                 
-    cout << "All possible paths from " << start << " to " << end << " are:\n";
-    dfsFindPaths(g, start, end, visited, pathStack);
-}
+    bool pathFound = false;
+    bool visited[26] = {false};  
+    my_stack pathStack;          
 
+    cout << "All possible paths from " << start << " to " << end << " are:\n";
+    dfsFindPaths(g, start, end, visited, pathStack, 0, pathFound); 
+    if (!pathFound) {
+        cout << "No path exists from " << start << " to " << end << endl;
+    }
+}
 //================================================================================================
 
 
@@ -762,11 +767,11 @@ public:
         }
     }
 
-    void storeData(Vehicles *vehicle, Graph &g)
+    void storeData(Vehicles *vehicle, Graph &g, int num)
     {
-        for (int i = 1; i < 31; i++)
+        for (int i = 1; i < num; i++)
         {
-            cout << "vehicle " << vehicle[i].id << endl;
+            //cout << "vehicle " << vehicle[i].id << endl;
             // cout << "vehicles : " << vehicle[i].id << " start: " << vehicle[i].start << " end : " << vehicle[i].end << endl;
 
             char a = vehicle[i].start;
@@ -785,14 +790,14 @@ public:
 
                 start = end;
                 end = ss.getTop();
-                cout << "start " << start << " end " << end << endl;
+                //cout << "start " << start << " end " << end << endl;
                 ss.pop();
                 insert(start, end, vehicle[i].id);
             }
             start = end;
             end = vehicle[i].end;
             // ss.pop();
-            cout << "start " << start << " end " << end << endl;
+            //cout << "start " << start << " end " << end << endl;
 
             insert(start, end, vehicle[i].id);
         }
@@ -1205,6 +1210,9 @@ void simulateTraffic2(Graph &g, Vehicles *v,VehiclesPQ& vpq, int num, TrafficSig
             cout << "===============VEHICLE " << count+1 << "==================" << endl;
             cout << "Vehicle " << v[j].id << " is moving from " << v[j].current << " to " << v[j].end << endl;
             if(v[j].priority == 0||v[j].priority == 5){
+                cout << "Vehicle " << v[j].id << " is an emergency vehicle" << endl;
+                Sleep(500);
+                Beep(523, 500);
                 E1.ASearch(v[j].current, v[j].end);
             }
             else{
@@ -1363,7 +1371,7 @@ int main()
             if(id == ""){
                 break;
             }
-            cout << id << " " << start << " " << end << " " << priority << endl;
+            //cout << id << " " << start << " " << end << " " << priority << endl;
             if(priority == "High"){
                 vpq.enqueue(id, start, end, 0);
                 v[vehCount++].setVehicles(id, start, end, 0);
@@ -1462,7 +1470,7 @@ int main()
         {
             cout << "=================CONGESTION STATUS==================" << endl;
             HashTable h;
-            h.storeData(v, g);
+            h.storeData(v, g, num2);
             // cout << "STORED" << endl;
             h.print();
         }
