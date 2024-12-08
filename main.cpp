@@ -205,20 +205,82 @@ struct Vehicles{
     char start;
     char end;
     char current;
+    int priority;
+    Vehicles* next;
 
     Vehicles(){
+        priority = 0;
         id = "";
         start = ' ';
         end = ' ';
         current = ' ';
+        next = NULL;
     }
 
-    void setVehicles(string id, char start, char end){
+    void setVehicles(string id, char start, char end, int priority){
         this->id = id;
         this->start = start;
         this->end = end;
         this->current = start;
+        this->priority = priority;
     }
+};
+
+class VehiclesPQ{
+    public:
+        Vehicles *head;
+        Vehicles *tail;
+
+        VehiclesPQ(){
+            head = NULL;
+            tail = NULL;
+        }
+
+        void enqueue(string id, char start, char end, int priority){
+            Vehicles *newNode = new Vehicles;
+            newNode->setVehicles(id, start, end, priority);
+            if(head == NULL){
+                head = newNode;
+                tail = newNode;
+                return;
+            }
+            if(priority < head->priority){
+                newNode->next = head;
+                head = newNode;
+                return;
+            }
+            Vehicles *temp = head;
+            while(temp->next != NULL && temp->next->priority <= priority){
+                temp = temp->next;
+            }
+            newNode->next = temp->next;
+            temp->next = newNode;
+            if(newNode->next == NULL){
+                tail = newNode;
+            }
+        }
+
+        void dequeue(){
+            if(head == NULL){
+                cout << "Queue is empty" << endl;
+                return;
+            }
+            Vehicles *temp = head;
+            head = head->next;
+            delete temp;
+        }
+
+        void display(){
+            Vehicles *temp = head;
+            while(temp != NULL){
+                cout << "Vehicle ID: " << temp->id << " Start: " << temp->start << " End: " << temp->end << " Priority: " << temp->priority << endl;
+                temp = temp->next;
+            }
+        }
+
+        bool isEmpty(){
+            return head == NULL;
+        }
 };
 
 
@@ -498,7 +560,6 @@ void blockageStatus(Graph& g, myRoads *r, int num){
             g.deleteEdge(r[i].end, r[i].start);
         }
     }
-
 }
 
 // If user wants to block the road
@@ -624,74 +685,6 @@ public:
     }
 };
 
-// my_stack Dijkstra2(Graph &g, char start, char end)
-// {
-//     my_stack s;
-//     int startVertex = vertexHash(start);
-//     int endVertex = vertexHash(end);
-//     float *distance = new float[g.vertices];
-//     bool *visited = new bool[g.vertices];
-//     char *path = new char[g.vertices];
-//     for (int i = 0; i < g.vertices; i++)
-//     {
-//         distance[i] = 999999;
-//         visited[i] = false;
-//         path[i] = ' ';
-//     }
-//     distance[startVertex] = 0;
-//     for (int i = 0; i < g.vertices; i++)
-//     {
-//         int minVertex = -1;
-//         for (int j = 0; j < g.vertices; j++)
-//         {
-//             if (!visited[j] && (minVertex == -1 || distance[j] < distance[minVertex]))
-//             {
-//                 minVertex = j;
-//             }
-//         }
-//         visited[minVertex] = true;
-//         for (Node *temp = g.list[minVertex].head; temp != NULL; temp = temp->next)
-//         {
-//             int adjVertex = vertexHash(temp->vertex);
-//             if (distance[minVertex] + temp->weight < distance[adjVertex])
-//             {
-//                 distance[adjVertex] = distance[minVertex] + temp->weight;
-//                 path[adjVertex] = minVertex + 'A';
-//             }
-//         }
-//     }
-
-//     // cout << "All possible paths from " << start << " to " << end << " are: " << endl;
-//     for (int i = 0; i < g.vertices; i++)
-//     {
-//         if (i != startVertex && path[i] != ' ')
-//         {
-//             cout << "Path:  ";
-//             char temp = path[i];
-//             my_stack tempStack;
-//             while (temp != ' ')
-//             {
-//                 tempStack.push(temp);
-//                 temp = path[vertexHash(temp)];
-//             }
-//             while (!tempStack.isEmpty())
-//             {
-//                 char top = tempStack.getTop();
-//                 cout << top << " ";
-//                 s.push(top);
-//                 tempStack.pop();
-//             }
-//             cout << end << " | Total Weight: " << distance[i] << endl;
-//         }
-//     }
-
-//     delete[] distance;
-//     delete[] visited;
-//     delete[] path;
-
-//     return s;
-// }
-
 class HashTable
 {
 public:
@@ -704,8 +697,6 @@ public:
         table = new LinkedList[n];
         size = n;
         countArray = new int[n];
-        // vehicle = v;
-        // g = gg;
         for (int i = 0; i < n; i++)
         {
             countArray[i] = 0;
@@ -751,7 +742,6 @@ public:
     {
         if (a == b)
             return;
-        // cout << "inserting " << vehicle << endl;
         int i = HashFunction(a, b);
         ListNode *add = new ListNode(vehicle);
         if (table[i].head == NULL)
@@ -766,7 +756,6 @@ public:
     {
         for (int i = 0; i < size; i++)
         {
-            // string str = reverseHashFunction(i);
             if (table[i].path == "")
             {
                 continue;
@@ -778,60 +767,6 @@ public:
             // table[i].display();
         }
     }
-
-    // my_stack BFS(Graph &g, char start, char end)
-    // {
-    //     my_stack path;
-    //     bool *visited = new bool[g.vertices];
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         visited[i] = false;
-    //     }
-
-    //     queue<int> q;
-    //     int *prev = new int[g.vertices];
-    //     for (int i = 0; i < g.vertices; i++)
-    //     {
-    //         prev[i] = -1;
-    //     }
-
-    //     int startVertex = vertexHash(start);
-    //     int endVertex = vertexHash(end);
-    //     visited[startVertex] = true;
-    //     q.push(startVertex);
-
-    //     while (!q.empty())
-    //     {
-    //         int current = q.front();
-    //         q.pop();
-
-    //         if (current == endVertex)
-    //         {
-    //             break;
-    //         }
-
-    //         for (Node *temp = g.list[current].head; temp != NULL; temp = temp->next)
-    //         {
-    //             int adjVertex = vertexHash(temp->vertex);
-    //             if (!visited[adjVertex])
-    //             {
-    //                 visited[adjVertex] = true;
-    //                 prev[adjVertex] = current;
-    //                 q.push(adjVertex);
-    //             }
-    //         }
-    //     }
-
-    //     for (int at = endVertex; at != -1; at = prev[at])
-    //     {
-    //         path.push(at + 'A');
-    //     }
-
-    //     delete[] visited;
-    //     delete[] prev;
-
-    //     return path;
-    // }
 
     void storeData(Vehicles *vehicle, Graph &g)
     {
@@ -870,47 +805,6 @@ public:
         count();
     }
 
-    void dfs(Graph &g, int v, bool visited[], char end, my_stack &path, bool &found)
-    {
-        visited[v] = true;
-        path.push(v + 'A');
-
-        if (v == vertexHash(end))
-        {
-            found = true;
-            return;
-        }
-
-        for (Node *temp = g.list[v].head; temp != NULL; temp = temp->next)
-        {
-            int adjVertex = vertexHash(temp->vertex);
-            if (!visited[adjVertex])
-            {
-                dfs(g, adjVertex, visited, end, path, found);
-                if (found)
-                    return;
-            }
-        }
-
-        path.pop();
-    }
-
-    my_stack DFS(Graph &g, char start, char end)
-    {
-        my_stack path;
-        bool *visited = new bool[g.vertices];
-        for (int i = 0; i < g.vertices; i++)
-        {
-            visited[i] = false;
-        }
-
-        bool found = false;
-        dfs(g, vertexHash(start), visited, end, path, found);
-
-        delete[] visited;
-        return path;
-    }
-
     void count()
     {
         for (int i = 0; i < size; i++)
@@ -924,23 +818,6 @@ public:
         }
     }
 };
-
-// void simulation(Graph &g, char a, char b)
-// {
-//     my_stack s;
-//     cout << "All possible paths from " << a << " to " << b << " are: " << endl;
-//     s = Dijkstra2(g, a, b);
-//     // while (!s.isEmpty())
-//     // {
-//     //     char start = s.getTop();
-//     //     char end = s.getTop();
-//     //     s.pop();
-//     //     // cout<<"Path : "<<start<<" -> c"<<end<<endl;
-//     //     my_stack path = Dijkstra2(g, start, end);
-//     //     cout<<endl;
-//     // }
-// }
-
 
 //================================================================================================
 
@@ -1406,7 +1283,7 @@ int main()
         }
         i++;
         //        cout << id << " " << start << " " << end << endl;
-        v[i - 1].setVehicles(id, start, end);
+        v[i - 1].setVehicles(id, start, end, 10);
     }
     file2.close();
 
@@ -1499,7 +1376,7 @@ int main()
         else if (ch == '5')
         {
             cout << "=================DISPLAY BLOCKED ROADS==================" << endl;
-            blockageStatus(g, r, num);
+            blockageStatus(g, r, counter);
             char strt, en;
             cout << "Enter start intersection: ";
             cin >> strt;
@@ -1517,9 +1394,9 @@ int main()
                 continue;
             }
 
-            blockRoads(g, r, strt, en, num);
+            blockRoads(g, r, strt, en, counter);
             r[counter++].setRoads(strt, en, true);
-            blockageStatus(g, r, num);
+            blockageStatus(g, r, counter);
         }
         else if (ch == '6')
         {
@@ -1552,9 +1429,11 @@ int main()
             cin >> strt;
             cout << "Enter end intersection: ";
             cin >> en;
-            for(int i = 0; i < num; i++){
+            for(int i = 0; i < counter; i++){
                 if(r[i].start == strt && r[i].end == en){
                     unblockRoad(g, r[i], strt, en);
+                    cout << "Road between " << strt << " and " << en << " is unblocked" << endl;
+                    counter--;
                     break;
                 }
             }
