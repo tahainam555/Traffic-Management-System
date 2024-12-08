@@ -55,6 +55,7 @@ int vertexHash(char ch){
 
 struct Node{
     float weight;
+    float baseWeight;
     char vertex;
     Node *next;
 };
@@ -71,6 +72,7 @@ class AdjList{
             Node *newNode = new Node;
             newNode->vertex = vertex;
             newNode->weight = weight;
+            newNode->baseWeight = weight;
             newNode->next = head;
             head = newNode;
         }
@@ -180,6 +182,18 @@ class Graph{
             while(temp != NULL){
                 if(temp->vertex == ch2){
                     return temp->weight;
+                }
+                temp = temp->next;
+            }
+            return -1;
+        }
+
+        float getBaseWeight(char ch, char ch2){
+            int i = vertexHash(ch);
+            Node *temp = list[i].head;
+            while(temp != NULL){
+                if(temp->vertex == ch2){
+                    return temp->baseWeight;
                 }
                 temp = temp->next;
             }
@@ -752,7 +766,7 @@ public:
         table[i].append(add);
     }
 
-    void print()
+    void print(Graph &g)
     {
         for (int i = 0; i < size; i++)
         {
@@ -764,6 +778,12 @@ public:
                 continue;
             }
             cout << table[i].path[0] << " to " << table[i].path[1] << " " << countArray[i] << endl;
+            if(countArray[i] > 3){
+                g.updateEdge(table[i].path[0], table[i].path[1], g.getWeight(table[i].path[0], table[i].path[1]) + 5*countArray[i]);
+            }
+            else{
+                g.updateEdge(table[i].path[0], table[i].path[1], g.getBaseWeight(table[i].path[0], table[i].path[1]));
+            }
             // table[i].display();
         }
     }
@@ -1473,7 +1493,7 @@ int main()
             HashTable h;
             h.storeData(v, g, num2);
             // cout << "STORED" << endl;
-            h.print();
+            h.print(g);
         }
         else if (ch == '5')
         {
